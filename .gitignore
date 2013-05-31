@@ -575,6 +575,3 @@ components/com_cobalt/*
 
 components/com_cobalt/fields/*
 !booking
-
-components/com_cobalt/views//*
-!booking
