@@ -25,9 +25,9 @@
 				<option value="0">CNO</option>
 				<option value="1">CYES</option>
 			</field>
+			<field name="columns" type="text" default="3" label="Columns amount" />
 		</fieldset>
 		<fieldset name="lbls" label="Labels">
-			<field name="lbl_title" type="text" default="Title" label="Title label" />
             <field name="title_char" label="Number of Title Characters" type="text" size="3" default="" />
             <field name="lbl_category" type="text" default="Category" label="Category label" />
 			<field name="field_labels" type="radio" class="btn-group" default="1" label="Show filed lables when under title">

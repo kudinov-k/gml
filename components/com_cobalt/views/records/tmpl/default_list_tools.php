@@ -8,17 +8,18 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-$k = $p1 = 0;
 $this->params = $this->tmpl_params['list'];
-$total_fields_keys = $this->total_fields_keys;
-$fh = new FieldHelper($this->fields_keys_by_id, $this->total_fields_keys);
+//$total_fields_keys = $this->total_fields_keys;
+//$fh = new FieldHelper($this->fields_keys_by_id, $this->total_fields_keys);
 JHtml::_('dropdown.init');
 $this->pos1 = $this->params->get('tmpl_params.field_id_position_1', array());
 $this->pos2 = $this->params->get('tmpl_params.field_id_position_2', array());
 $this->pos3 = $this->params->get('tmpl_params.field_id_position_3', array());
 $this->pos4 = $this->params->get('tmpl_params.field_id_position_4', array());
 
-
+$k = 0;
+$cols = $this->params->get('tmpl_params.columns', 3);
+$span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 ?>
 
 
@@ -56,8 +57,27 @@ $this->pos4 = $this->params->get('tmpl_params.field_id_position_4', array());
 <?php endif;?>
 
 <?php foreach ($this->items AS $item):?>
-	<?php echo getItemBlock($item, $this); ?>
+
+	<?php if($k % $cols == 0):?>
+		<div class="row-fluid">
+	<?php endif;?>
+
+	<div class="span<?php echo $span[$cols]?> ">
+		<?php echo getItemBlock($item, $this); ?>
+	</div>
+
+	<?php if($k % $cols == ($cols - 1)):?>
+		</div><hr>
+	<?php endif; $k++;?>
+
 <?php endforeach;?>
+
+<?php if($k % $cols != 0):?>
+	</div>
+<?php endif;?>
+
+<div class="clearfix"></div>
+
 
 <?php
 function getItemBlock($item, $that, $core_fields = '')
