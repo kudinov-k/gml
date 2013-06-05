@@ -17,9 +17,30 @@ $this->pos2 = $this->params->get('tmpl_params.field_id_position_2', array());
 $this->pos3 = $this->params->get('tmpl_params.field_id_position_3', array());
 $this->pos4 = $this->params->get('tmpl_params.field_id_position_4', array());
 
-$k = 0;
 $cols = $this->params->get('tmpl_params.columns', 3);
 $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
+
+$db = JFactory::getDbo();
+$query = $db->getQuery(true);
+
+$cats_model = JModelLegacy::getInstance('Categories', 'CobaltModel');
+$sorted = $cat_ids = array();
+foreach ($this->items AS $item)
+{
+	$cat_id = array_shift(array_keys($item->categories));
+	$cats[$cat_id] = @$item->categories[$cat_id];
+	$sorted[$cat_id][] = $item;
+}
+ArrayHelper::clean_r($cats);
+$cats[0] = 0;
+// var_dump($cats);exit;
+$query->select('c.*');
+$query->from('#__js_res_categories AS c');
+$query->where('c.id IN (' . implode(',', array_keys($cats)) . ')');
+$query->order('c.lft');
+$db->setQuery($query);
+$sorted_cats = $db->loadColumn();
+
 ?>
 
 
@@ -42,7 +63,7 @@ $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 }
 .user-ctrls {
 	position: absolute;
-	top:-24px;
+	top:0px;
 	right: 0;
 }
 	</style>
@@ -56,25 +77,45 @@ $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 	</ul>
 <?php endif;?>
 
-<?php foreach ($this->items AS $item):?>
+<?php foreach ($sorted_cats AS $cat_id):?>
 
-	<?php if($k % $cols == 0):?>
-		<div class="row-fluid">
+	<?php
+	$parents = $cats_model->getParentsObjectsByChild($cat_id);
+
+	foreach ($parents as $parent)
+	{
+		if($parent->id == $cat_id) continue;
+		?>
+		<div class="category"><?php echo $parent->title;?></div>
+		<div class="clearfix"></div>
+		<?php
+	}
+	?>
+	<div class="subcategory"><?php echo $cats[$cat_id];?></div>
+	<div class="clearfix"></div>
+	<?php $k = 0;?>
+	<?php foreach ($sorted[$cat_id] AS $item):?>
+
+		<?php if($k % $cols == 0):?>
+			<div class="row-fluid">
+		<?php endif;?>
+
+		<div class="span<?php echo $span[$cols]?> ">
+			<?php echo getItemBlock($item, $this); ?>
+		</div>
+
+		<?php if($k % $cols == ($cols - 1)):?>
+			</div><hr>
+		<?php endif; $k++;?>
+
+	<?php endforeach;?>
+
+	<?php if($k % $cols != 0):?>
+		</div>
 	<?php endif;?>
-
-	<div class="span<?php echo $span[$cols]?> ">
-		<?php echo getItemBlock($item, $this); ?>
-	</div>
-
-	<?php if($k % $cols == ($cols - 1)):?>
-		</div><hr>
-	<?php endif; $k++;?>
 
 <?php endforeach;?>
 
-<?php if($k % $cols != 0):?>
-	</div>
-<?php endif;?>
 
 <div class="clearfix"></div>
 
@@ -113,7 +154,7 @@ function getItemBlock($item, $that, $core_fields = '')
 					<?php foreach ($that->pos1 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
-						<?php if($field->params->get('core.show_lable') > 1 && $that->params->get('tmpl_params.field_labels') == 1):?>
+						<?php if($field->params->get('core.show_lable') > 1):?>
 							<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
 								<?php echo $field->label; ?>
 								<?php if($field->params->get('core.icon')):?>
@@ -144,17 +185,9 @@ function getItemBlock($item, $that, $core_fields = '')
 					<?php foreach ($that->pos2 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
-						<?php if($field->params->get('core.show_lable') > 1 && $that->params->get('tmpl_params.field_labels') == 1):?>
-							<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
-								<?php echo $field->label; ?>
-								<?php if($field->params->get('core.icon')):?>
-									<img alt="<?php strip_tags($field->label)?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle">
-								<?php endif;?>
-							</dt>
-						<?php endif;?>
-						<dd class="input-field<?php echo ($field->params->get('core.label_break') > 1 ? '-full' : NULL)?>">
-							<?php echo $field->result; ?>
-						</dd>
+
+						<?php getField($field, $that, 2)?>
+
 						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
 				</dl>
@@ -166,7 +199,7 @@ function getItemBlock($item, $that, $core_fields = '')
 					<?php foreach ($that->pos3 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
-						<?php if($field->params->get('core.show_lable') > 1 && $that->params->get('tmpl_params.field_labels') == 1):?>
+						<?php if($field->params->get('core.show_lable') > 1):?>
 							<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
 								<?php echo $field->label; ?>
 								<?php if($field->params->get('core.icon')):?>
@@ -189,7 +222,7 @@ function getItemBlock($item, $that, $core_fields = '')
 					<?php foreach ($that->pos4 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
-						<?php if($field->params->get('core.show_lable') > 1 && $that->params->get('tmpl_params.field_labels') == 1):?>
+						<?php if($field->params->get('core.show_lable') > 1):?>
 							<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
 								<?php echo JText::_($field->label); ?>
 								<?php if($field->params->get('core.icon')):?>
@@ -233,6 +266,25 @@ function getItemBlock($item, $that, $core_fields = '')
 	return ob_get_clean();
 }
 
+function getField($field, $that, $position = 1)
+{
+?>
+<div class="">
+	<?php if($field->params->get('core.show_lable') > 1):?>
+		<div class="<?php echo $field->class;?>" >
+			<?php echo $field->label; ?>
+			<?php if($field->params->get('core.icon')):?>
+				<img alt="<?php strip_tags($field->label)?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle">
+			<?php endif;?>
+		</div>
+	<?php endif;?>
+	<div class="input-field<?php echo ($field->params->get('core.label_break') > 1 ? '-full' : NULL)?>">
+		<?php echo $field->result; ?>
+	</div>
+</div>
+<?php
+}
+
 function getTitle($item, $that){
 ?>
 	<?php if($that->user->get('id')):?>
@@ -256,8 +308,11 @@ function getTitle($item, $that){
 
 	<?php if($that->params->get('tmpl_core.item_title')):?>
 		<?php if($that->submission_types[$item->type_id]->params->get('properties.item_title')):?>
-			<div class="pull-left">
+			<div class="<?php echo $that->params->get('tmpl_params.title_align', 'pull-left')?>">
 				<<?php echo $that->params->get('tmpl_core.title_tag', 'h2');?> class="record-title">
+					<?php if( $that->params->get('tmpl_params.title_length', 0) && mb_strlen($item->title) > $that->params->get('tmpl_params.title_length')):?>
+						<?php $item->title = mb_substr($item->title, 0, $that->params->get('tmpl_params.title_length')).$that->params->get('tmpl_params.title_end')?>
+					<?php endif;?>
 					<?php if(in_array($that->params->get('tmpl_core.item_link'), $that->user->getAuthorisedViewLevels())):?>
 						<a <?php echo $item->nofollow ? 'rel="nofollow"' : '';?> href="<?php echo JRoute::_($item->url);?>">
 							<?php echo $item->title?>
