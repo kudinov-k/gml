@@ -79,20 +79,24 @@ $sorted_cats = $db->loadColumn();
 
 <?php foreach ($sorted_cats AS $cat_id):?>
 
-	<?php
-	$parents = $cats_model->getParentsObjectsByChild($cat_id);
-
-	foreach ($parents as $parent)
-	{
-		if($parent->id == $cat_id) continue;
-		?>
-		<div class="category"><?php echo $parent->title;?></div>
-		<div class="clearfix"></div>
+	<?php if($this->params->get('tmpl_params.show_cats', 1)):?>
 		<?php
-	}
-	?>
-	<div class="subcategory"><?php echo $cats[$cat_id];?></div>
-	<div class="clearfix"></div>
+		$parents = $cats_model->getParentsObjectsByChild($cat_id);
+
+		foreach ($parents as $parent)
+		{
+			if($parent->id == $cat_id) continue;
+			?>
+			<div class="category"><?php echo $parent->title;?></div>
+			<div class="clearfix"></div>
+			<?php
+		}
+		?>
+
+		<div class="subcategory"><?php echo $cats[$cat_id];?></div>
+		<div class="clearfix"></div>
+	<?php endif;?>
+
 	<?php $k = 0;?>
 	<?php foreach ($sorted[$cat_id] AS $item):?>
 
@@ -105,7 +109,7 @@ $sorted_cats = $db->loadColumn();
 		</div>
 
 		<?php if($k % $cols == ($cols - 1)):?>
-			</div><hr>
+			</div>
 		<?php endif; $k++;?>
 
 	<?php endforeach;?>
