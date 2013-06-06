@@ -11,13 +11,13 @@
 
 
 .position1{
-	width:100px;
+	width:200px;
 }
 .position2{
-	width:100px;
+	width:200px;
 }
 .position3{
-	width:100px;
+	width:200px;
 }
 .position4{
 
@@ -25,13 +25,68 @@
 
 
 .category{
-
+	font-size: 18px;
 }
 
 .subcategory{
-
+	font-size: 14px;
 }
 
 .item-block{
 
+}
+/*  styles of fields blocks in position*/
+.fields-pos1{
+
+}
+.fields-pos2{
+
+}
+.fields-pos3{
+
+}
+.fields-pos4{
+
+}
+
+/*  styles of field label and value in position*/
+
+.label-pos1{
+	margin: 2px;
+}
+.label-pos1:AFTER{
+	content:":";
+}
+.field-pos1{
+	margin: 2px;
+}
+/**************************/
+.label-pos2{
+	margin: 2px;
+}
+.label-pos2:AFTER{
+	content:":";
+}
+.field-pos2{
+	margin: 2px;
+}
+/**************************/
+.label-pos3{
+	margin: 2px;
+}
+.label-pos3:AFTER{
+	content:":";
+}
+.field-pos3{
+	margin: 2px;
+}
+/**************************/
+.label-pos4{
+	margin: 2px;
+}
+.label-pos4:AFTER{
+	content:":";
+}
+.field-pos4{
+	margin: 2px;
 }

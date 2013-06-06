@@ -150,24 +150,14 @@ function getItemBlock($item, $that, $core_fields = '')
 
 		<div class="pull-left position1">
 			<?php if(count($that->pos1)): ?>
-				<dl class="text-overflow">
+				<div class="text-overflow fields-pos1">
 					<?php foreach ($that->pos1 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
-						<?php if($field->params->get('core.show_lable') > 1):?>
-							<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
-								<?php echo $field->label; ?>
-								<?php if($field->params->get('core.icon')):?>
-									<img alt="<?php strip_tags($field->label)?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle">
-								<?php endif;?>
-							</dt>
-						<?php endif;?>
-						<dd class="input-field<?php echo ($field->params->get('core.label_break') > 1 ? '-full' : NULL)?>">
-							<?php echo $field->result; ?>
-						</dd>
+						<?php getField($field, $that, 1)?>
 						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
-				</dl>
+				</div>
 			<?php endif;?>
 		</div>
 		<div class="pull-left position2">
@@ -181,7 +171,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			<!-- End Title position 3-->
 
 			<?php if(count($that->pos2)): ?>
-				<dl class="text-overflow">
+				<div class="text-overflow fields-pos2">
 					<?php foreach ($that->pos2 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
@@ -190,52 +180,32 @@ function getItemBlock($item, $that, $core_fields = '')
 
 						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
-				</dl>
+				</div>
 			<?php endif;?>
 		</div>
 		<div class="pull-left position3">
 			<?php if(count($that->pos3)): ?>
-				<dl class="text-overflow">
+				<div class="text-overflow fields-pos3">
 					<?php foreach ($that->pos3 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
-						<?php if($field->params->get('core.show_lable') > 1):?>
-							<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
-								<?php echo $field->label; ?>
-								<?php if($field->params->get('core.icon')):?>
-									<img alt="<?php strip_tags($field->label)?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle">
-								<?php endif;?>
-							</dt>
-						<?php endif;?>
-						<dd class="input-field<?php echo ($field->params->get('core.label_break') > 1 ? '-full' : NULL)?>">
-							<?php echo $field->result; ?>
-						</dd>
+						<?php getField($field, $that, 3)?>
 						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
-				</dl>
+				</div>
 			<?php endif;?>
 		</div>
 		<div class="clearfix"></div>
 		<div class="position4">
 			<?php if(count($that->pos4)): ?>
-				<dl class="text-overflow">
+				<div class="text-overflow fields-pos4">
 					<?php foreach ($that->pos4 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
-						<?php if($field->params->get('core.show_lable') > 1):?>
-							<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
-								<?php echo JText::_($field->label); ?>
-								<?php if($field->params->get('core.icon')):?>
-									<img alt="<?php strip_tags($field->label)?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle">
-								<?php endif;?>
-							</dt>
-						<?php endif;?>
-						<dd class="input-field<?php echo ($field->params->get('core.label_break') > 1 ? '-full' : NULL)?>">
-							<?php echo $field->result; ?>
-						</dd>
+						<?php getField($field, $that, 4)?>
 						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
-				</dl>
+				</div>
 			<?php endif;?>
 
 			<?php foreach ($that->total_fields_keys AS $field):?>
@@ -269,16 +239,16 @@ function getItemBlock($item, $that, $core_fields = '')
 function getField($field, $that, $position = 1)
 {
 ?>
-<div class="">
+<div class="field-block <?php echo $that->params->get('tmpl_params.field_view'.$position, 'clearfix')?>">
 	<?php if($field->params->get('core.show_lable') > 1):?>
-		<div class="<?php echo $field->class;?>" >
+		<div class="label-pos<?php echo $position; ?> <?php echo $that->params->get('tmpl_params.field_label'.$position, '')?> <?php echo $field->class;?>" >
 			<?php echo $field->label; ?>
 			<?php if($field->params->get('core.icon')):?>
-				<img alt="<?php strip_tags($field->label)?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle">
+				<img alt="<?php echo strip_tags($field->label)?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle">
 			<?php endif;?>
 		</div>
 	<?php endif;?>
-	<div class="input-field<?php echo ($field->params->get('core.label_break') > 1 ? '-full' : NULL)?>">
+	<div class="field-pos<?php echo $position; ?> <?php echo $that->params->get('tmpl_params.field_label'.$position, '')?> input-field<?php echo ($field->params->get('core.label_break') > 1 ? '-full' : NULL)?>">
 		<?php echo $field->result; ?>
 	</div>
 </div>

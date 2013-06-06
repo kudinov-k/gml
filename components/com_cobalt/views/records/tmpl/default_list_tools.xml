@@ -11,24 +11,68 @@
 	<description>Template list table</description>
 
 	<fields name="tmpl_params">
-		<fieldset name="positions" label="Positions" description="Fields other than selected that should be shown in intro will be shown in separate columns">
- 			<field name="field_id_position_1" client="list" type="meresourcesfields" key="id" size="15" multiple="true" default="Read more" label="Fields for Position 1" description="Usually image thumbnail" />
-			<field name="field_id_position_2" client="list" type="meresourcesfields" key="id" size="15" multiple="true" default="Read more" label="Fields for Position 2" description="" />
-			<field name="field_id_position_3" client="list" type="meresourcesfields" key="id" size="15" multiple="true" default="Read more" label="Fields for Position 3" description="" />
-			<field name="field_id_position_4" client="list" type="meresourcesfields" key="id" size="15" multiple="true" default="Read more" label="Fields for Position 4" description="" />
-			<field name="title_position" type="list" class="inputbox" default="1" label="Title position">
-				<option value="1">Position 1</option>
-				<option value="2">Position 2</option>
-				<option value="3">Position 3</option>
+		<fieldset name="position1" label="Position 1" description="">
+ 			<field name="field_id_position_1" client="list" type="meresourcesfields" key="id" size="10" multiple="true" default="Read more" label="Fields for Position 1" description="Usually image thumbnail" />
+			<field name="field_label1" type="list" default="pull-left" label="Field Label">
+				<option value="pull-left">Left</option>
+				<option value="">Top</option>
 			</field>
+			<field name="field_view1" type="list" default="clearfix" label="Field View">
+				<option value="pull-left">Horizontal</option>
+				<option value="clearfix">Vertical</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="position2" label="Position 2" description="">
+			<field name="field_id_position_2" client="list" type="meresourcesfields" key="id" size="10" multiple="true" default="Read more" label="Fields for Position 2" description="" />
+			<field name="field_label2" type="list" default="pull-left" label="Field Label">
+				<option value="pull-left">Left</option>
+				<option value="">Top</option>
+			</field>
+			<field name="field_view2" type="list" default="clearfix" label="Field View">
+				<option value="pull-left">Horizontal</option>
+				<option value="clearfix">Vertical</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="position3" label="Position 3" description="">
+			<field name="field_id_position_3" client="list" type="meresourcesfields" key="id" size="10" multiple="true" default="Read more" label="Fields for Position 3" description="" />
+			<field name="field_label3" type="list" default="pull-left" label="Field Label">
+				<option value="pull-left">Left</option>
+				<option value="">Top</option>
+			</field>
+			<field name="field_view3" type="list" default="clearfix" label="Field View">
+				<option value="pull-left">Horizontal</option>
+				<option value="clearfix">Vertical</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="position4" label="Position 4" description="">
+			<field name="field_id_position_4" client="list" type="meresourcesfields" key="id" size="10" multiple="true" default="Read more" label="Fields for Position 4" description="" />
+			<field name="field_label4" type="list" default="pull-left" label="Field Label">
+				<option value="pull-left">Left</option>
+				<option value="">Top</option>
+			</field>
+			<field name="field_view4" type="list" default="clearfix" label="Field View">
+				<option value="pull-left">Horizontal</option>
+				<option value="clearfix">Vertical</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="other" label="Other settings" description="">
 			<field name="show_core" type="radio" class="btn-group" default="1" label="Show Core Fields table">
 				<option value="0">CNO</option>
 				<option value="1">CYES</option>
 			</field>
 			<field name="columns" type="text" default="3" label="Columns amount" />
-
 		</fieldset>
+
 		<fieldset name="lbls" label="Title">
+			<field name="title_position" type="list" class="inputbox" default="1" label="Title position">
+				<option value="1">Position 1</option>
+				<option value="2">Position 2</option>
+				<option value="3">Position 3</option>
+			</field>
             <field name="title_length" label="Number of Title Characters" type="text" size="3" default="" />
             <field name="title_end" label="Title end symbols" type="text" size="3" default="..." />
 			<field name="title_align" type="list" default="pull-left" label="Title align">
