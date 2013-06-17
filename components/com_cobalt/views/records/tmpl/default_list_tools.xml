@@ -65,6 +65,7 @@
 				<option value="1">CYES</option>
 			</field>
 			<field name="columns" type="text" default="3" label="Columns amount" />
+			<field name="prefix" type="text" default="" label="Style prefix" />
 			<field name="show_cats" type="radio" class="btn-group"  default="1" label="Show categories" >
 				<option value="0">CNO</option>
 				<option value="1">CYES</option>

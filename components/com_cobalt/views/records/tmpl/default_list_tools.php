@@ -19,28 +19,31 @@ $this->pos4 = $this->params->get('tmpl_params.field_id_position_4', array());
 
 $cols = $this->params->get('tmpl_params.columns', 3);
 $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
+$prefix = $this->params->get('tmpl_params.prefix', '');
 
 $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 
-$cats_model = JModelLegacy::getInstance('Categories', 'CobaltModel');
-$sorted = $cat_ids = array();
-foreach ($this->items AS $item)
+if($this->params->get('tmpl_params.show_cats', 1))
 {
-	$cat_id = array_shift(array_keys($item->categories));
-	$cats[$cat_id] = @$item->categories[$cat_id];
-	$sorted[$cat_id][] = $item;
-}
-ArrayHelper::clean_r($cats);
-$cats[0] = 0;
+	$cats_model = JModelLegacy::getInstance('Categories', 'CobaltModel');
+	$sorted = $cat_ids = $showed_parents = array();
+	foreach ($this->items AS $item)
+	{
+		$cat_id = array_shift(array_keys($item->categories));
+		$cats[$cat_id] = @$item->categories[$cat_id];
+		$sorted[$cat_id][] = $item;
+	}
+	ArrayHelper::clean_r($cats);
+	$cats[0] = 0;
 // var_dump($cats);exit;
-$query->select('c.*');
-$query->from('#__js_res_categories AS c');
-$query->where('c.id IN (' . implode(',', array_keys($cats)) . ')');
-$query->order('c.lft');
-$db->setQuery($query);
-$sorted_cats = $db->loadColumn();
-
+	$query->select('c.*');
+	$query->from('#__js_res_categories AS c');
+	$query->where('c.id IN (' . implode(',', array_keys($cats)) . ')');
+	$query->order('c.lft');
+	$db->setQuery($query);
+	$sorted_cats = $db->loadColumn();
+}
 ?>
 
 
@@ -77,28 +80,50 @@ $sorted_cats = $db->loadColumn();
 	</ul>
 <?php endif;?>
 
-<?php foreach ($sorted_cats AS $cat_id):?>
+<?php if($this->params->get('tmpl_params.show_cats', 1)):?>
+	<?php foreach ($sorted_cats AS $cat_id):?>
 
-	<?php if($this->params->get('tmpl_params.show_cats', 1)):?>
 		<?php
 		$parents = $cats_model->getParentsObjectsByChild($cat_id);
-
+		$f_cat = 0;
 		foreach ($parents as $parent)
 		{
-			if($parent->id == $cat_id) continue;
+			if(in_array($parent->id, $showed_parents)) {$f_cat++; continue;}
 			?>
-			<div class="category"><?php echo $parent->title;?></div>
+			<div class="<?php echo $prefix;?><?php if(!$f_cat):?>category<?php $f_cat++; else:?>subcategory<?php endif;?>"><?php echo $parent->title;?></div>
 			<div class="clearfix"></div>
 			<?php
+			$showed_parents[] = $parent->id;
 		}
 		?>
 
-		<div class="subcategory"><?php echo $cats[$cat_id];?></div>
-		<div class="clearfix"></div>
-	<?php endif;?>
+		<?php $k = 0;?>
+		<?php foreach ($sorted[$cat_id] AS $item):?>
+
+			<?php if($k % $cols == 0):?>
+				<div class="row-fluid">
+			<?php endif;?>
+
+			<div class="span<?php echo $span[$cols]?> ">
+				<?php echo getItemBlock($item, $this); ?>
+			</div>
+
+			<?php if($k % $cols == ($cols - 1)):?>
+				</div>
+			<?php endif; $k++;?>
+
+		<?php endforeach;?>
+
+		<?php if($k % $cols != 0):?>
+			</div>
+		<?php endif;?>
+
+	<?php endforeach;?>
+
+<?php else:?>
 
 	<?php $k = 0;?>
-	<?php foreach ($sorted[$cat_id] AS $item):?>
+	<?php foreach ($this->items AS $item):?>
 
 		<?php if($k % $cols == 0):?>
 			<div class="row-fluid">
@@ -118,9 +143,7 @@ $sorted_cats = $db->loadColumn();
 		</div>
 	<?php endif;?>
 
-<?php endforeach;?>
-
-
+<?php endif;?>
 <div class="clearfix"></div>
 
 
@@ -128,6 +151,7 @@ $sorted_cats = $db->loadColumn();
 function getItemBlock($item, $that, $core_fields = '')
 {
 	$class = '';
+	$prefix = $that->params->get('tmpl_params.prefix', '');
 	if($item->featured)
 	{
 		$class = ' success';
@@ -143,18 +167,18 @@ function getItemBlock($item, $that, $core_fields = '')
 
 	ob_start();
 ?>
-	<div class="item-block row-fluid<?php echo $class;?>">
+	<div class="<?php echo $prefix;?>item-block row-fluid<?php echo $class;?>">
 		<!-- Title position 1-->
 		<?php if($that->params->get('tmpl_params.title_position', 1) == 1):?>
-			<div class="title-position1 relative_ctrls has-context">
+			<div class="<?php echo $prefix;?>title-position1 relative_ctrls has-context">
 				<?php getTitle($item, $that);?>
 			</div>
 		<?php endif;?>
 		<!-- End Title position 1-->
 
-		<div class="pull-left position1">
+		<div class="pull-left <?php echo $prefix;?>position1">
 			<?php if(count($that->pos1)): ?>
-				<div class="text-overflow fields-pos1">
+				<div class="text-overflow <?php echo $prefix;?>fields-pos1">
 					<?php foreach ($that->pos1 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
@@ -164,18 +188,18 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 		</div>
-		<div class="pull-left position2">
+		<div class="pull-left <?php echo $prefix;?>position2">
 
 			<!-- Title position 3-->
 			<?php if($that->params->get('tmpl_params.title_position', 1) == 3):?>
-				<div class="title-position3 relative_ctrls has-context">
+				<div class="<?php echo $prefix;?>title-position3 relative_ctrls has-context">
 				<?php getTitle($item, $that);?>
 			</div>
 			<?php endif;?>
 			<!-- End Title position 3-->
 
 			<?php if(count($that->pos2)): ?>
-				<div class="text-overflow fields-pos2">
+				<div class="text-overflow <?php echo $prefix;?>fields-pos2">
 					<?php foreach ($that->pos2 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
@@ -187,9 +211,9 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 		</div>
-		<div class="pull-left position3">
+		<div class="pull-left <?php echo $prefix;?>position3">
 			<?php if(count($that->pos3)): ?>
-				<div class="text-overflow fields-pos3">
+				<div class="text-overflow <?php echo $prefix;?>fields-pos3">
 					<?php foreach ($that->pos3 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
@@ -200,9 +224,9 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php endif;?>
 		</div>
 		<div class="clearfix"></div>
-		<div class="position4">
+		<div class="<?php echo $prefix;?>position4">
 			<?php if(count($that->pos4)): ?>
-				<div class="text-overflow fields-pos4">
+				<div class="text-overflow <?php echo $prefix;?>fields-pos4">
 					<?php foreach ($that->pos4 AS $id): $id = $that->fields_keys_by_id[$id];?>
 						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
@@ -212,16 +236,23 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 
+			<?php if(count($that->total_fields_keys)):?>
+			<dl class="text-overflow">
 			<?php foreach ($that->total_fields_keys AS $field):?>
-				<dl class="text-overflow">
+				<?php if(empty($field->result)) continue;?>
 					<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
 						<?php if($field->params->get('core.icon') && $that->params->get('tmpl_params.item_icon_fields')):?>
 							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle" />
 						<?php endif;?>
 						<?php echo JText::_($field->label);?>
 					</dt>
-				</dl>
+					<dd>
+						<?php echo $field->result;?>
+					</dd>
 			<?php endforeach;?>
+			</dl>
+			<?php endif;?>
+
 			<?php if($that->params->get('tmpl_params.show_core', 1)):?>
 				<?php getCoreFields($item, $that);?>
 			<?php endif;?>
@@ -229,7 +260,7 @@ function getItemBlock($item, $that, $core_fields = '')
 
 		<!-- Title position 2-->
 		<?php if($that->params->get('tmpl_params.title_position', 1) == 2):?>
-			<div class="title-position2 relative_ctrls has-context">
+			<div class="<?php echo $prefix;?>title-position2 relative_ctrls has-context">
 				<?php getTitle($item, $that);?>
 			</div>
 		<?php endif;?>
@@ -242,8 +273,9 @@ function getItemBlock($item, $that, $core_fields = '')
 
 function getField($field, $that, $position = 1)
 {
+	$prefix = $that->params->get('tmpl_params.prefix', '');
 ?>
-<div class="field-block <?php echo $that->params->get('tmpl_params.field_view'.$position, 'clearfix')?>">
+<div class="<?php echo $prefix;?>field-block <?php echo $that->params->get('tmpl_params.field_view'.$position, 'clearfix')?>">
 	<?php if($field->params->get('core.show_lable') > 1):?>
 		<div class="label-pos<?php echo $position; ?> <?php echo $that->params->get('tmpl_params.field_label'.$position, '')?> <?php echo $field->class;?>" >
 			<?php echo $field->label; ?>
@@ -260,6 +292,7 @@ function getField($field, $that, $position = 1)
 }
 
 function getTitle($item, $that){
+	$prefix = $that->params->get('tmpl_params.prefix', '');
 ?>
 	<?php if($that->user->get('id')):?>
 		<div class="user-ctrls">
@@ -287,6 +320,7 @@ function getTitle($item, $that){
 					<?php if( $that->params->get('tmpl_params.title_length', 0) && mb_strlen($item->title) > $that->params->get('tmpl_params.title_length')):?>
 						<?php $item->title = mb_substr($item->title, 0, $that->params->get('tmpl_params.title_length')).$that->params->get('tmpl_params.title_end')?>
 					<?php endif;?>
+					<span class="<?php echo $prefix;?>title-text">
 					<?php if(in_array($that->params->get('tmpl_core.item_link'), $that->user->getAuthorisedViewLevels())):?>
 						<a <?php echo $item->nofollow ? 'rel="nofollow"' : '';?> href="<?php echo JRoute::_($item->url);?>">
 							<?php echo $item->title?>
@@ -294,7 +328,7 @@ function getTitle($item, $that){
 					<?php else :?>
 						<?php echo $item->title?>
 					<?php endif;?>
-
+					</span>
 					<?php echo CEventsHelper::showNum('record', $item->id);?>
 				</<?php echo $that->params->get('tmpl_core.title_tag', 'h2');?>>
 			</div>
