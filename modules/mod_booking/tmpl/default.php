@@ -21,8 +21,9 @@ $doc->addScriptDeclaration("
 				type: 'POST',
 				dataType: 'json',
 				data:{
-					field_id: ".$params->get('field_id').",
+					field_id: ".$params->get('booking_id').",
 					func: 'getCart',
+					mod_params: '".$params->toString()."'
 				}
 			}).done(function(json) {
 				$('#booking_cart').html(json.result);
@@ -41,7 +42,7 @@ $doc->addScriptDeclaration("
 				type: 'POST',
 				dataType: 'json',
 				data:{
-					field_id: ".$params->get('field_id').",
+					field_id: ".$params->get('booking_id').",
 					func: 'removeFromCart',
 					index: id
 				}
@@ -59,7 +60,7 @@ $doc->addScriptDeclaration("
 				type: 'POST',
 				dataType: 'json',
 				data:{
-					field_id: ".$params->get('field_id').",
+					field_id: ".$params->get('booking_id').",
 					func: 'orderCart'
 				}
 			}).done(function(json) {

@@ -29,7 +29,7 @@ $doc->addScript(JUri::root(true).'/components/com_cobalt/fields/booking/datepick
 </div>
 
 <script type="text/javascript">
-	var booking_amount_<?php echo $this->id;?> = <?php echo $this->value;?>;
+	var booking_amount_<?php echo $this->id;?> = <?php echo $this->value ? $this->value : 0;?>;
 
 	(function($) {
 		$.datepicker.setDefaults( $.datepicker.regional[ "ru" ] );

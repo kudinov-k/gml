@@ -103,6 +103,7 @@ class JFormFieldCBooking extends CFormField
 		$rows	= array();
 		$r_ids	= array();
 
+		$params = new JRegistry($app->input->getString('mod_params', ''));
 		$cart = $app->getUserState('booking_cart', array());
 
 		$model = JModelLegacy::getInstance('Record', 'CobaltModel');
@@ -111,7 +112,7 @@ class JFormFieldCBooking extends CFormField
 			if(in_array($row['record_id'], $r_ids)) continue;
 
 			$record = ItemsStore::getRecord($row['record_id']);
-			$rows[$row['record_id']] = $model->_prepareItem($record);
+			$rows[$row['record_id']] = $model->_prepareItem($record, 'list');
 			$r_ids[] = $row['record_id'];
 		}
 

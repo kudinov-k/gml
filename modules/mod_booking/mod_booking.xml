@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension
-	type="module"
-	version="3.0"
-	client="site"
-	method="upgrade">
+<extension type="module" version="3.0" client="site" method="upgrade">
 	<name>mod_booking</name>
 	<author>MintJoomla</author>
 	<creationDate>May 2013</creationDate>
@@ -27,12 +23,15 @@
 	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_STATISTICS" />
 	<config>
 		<fields name="params">
-			<fieldset name="basic">
-				<field
-					name="field_id"
-					type="text"
-					label="Booking field id"
-					 />
+			<fieldset name="basic" addfieldpath="/libraries/mint/forms/fields/">
+
+				<field 	name="show_title" type="radio" class="btn-group" label="Show title" >
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field 	name="show_fields" type="meresourcesfields" multiple="multiple" label="Show fields" />
+				<field 	name="booking_id" type="meresourcesfields" key="id" label="Booking field" />
+				<field 	name="price_id" type="meresourcesfields" label="Price field" />
 			</fieldset>
 		</fields>
 	</config>
