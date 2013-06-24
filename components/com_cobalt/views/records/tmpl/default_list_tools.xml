@@ -17,9 +17,25 @@
 				<option value="pull-left">Left</option>
 				<option value="">Top</option>
 			</field>
-			<field name="field_view1" type="list" default="clearfix" label="Field View">
-				<option value="pull-left">Horizontal</option>
-				<option value="clearfix">Vertical</option>
+			<field name="field_view1" type="groupedlist" default="clearfix" label="Field View">
+				<group label="Horizontal">
+					<option value="pull-left">Pull left</option>
+					<option value="span1">Span 1</option>
+					<option value="span2">Span 2</option>
+					<option value="span3">Span 3</option>
+					<option value="span4">Span 4</option>
+					<option value="span5">Span 5</option>
+					<option value="span6">Span 6</option>
+					<option value="span7">Span 7</option>
+					<option value="span8">Span 8</option>
+					<option value="span9">Span 9</option>
+					<option value="span10">Span 10</option>
+					<option value="span11">Span 11</option>
+					<option value="span12">Span 12</option>
+				</group>
+				<group label="Vertical">
+					<option value="clearfix">Clearfix</option>
+				</group>
 			</field>
 		</fieldset>
 
@@ -29,9 +45,25 @@
 				<option value="pull-left">Left</option>
 				<option value="">Top</option>
 			</field>
-			<field name="field_view2" type="list" default="clearfix" label="Field View">
-				<option value="pull-left">Horizontal</option>
-				<option value="clearfix">Vertical</option>
+			<field name="field_view2" type="groupedlist" default="clearfix" label="Field View">
+				<group label="Horizontal">
+					<option value="pull-left">Pull left</option>
+					<option value="span1">Span 1</option>
+					<option value="span2">Span 2</option>
+					<option value="span3">Span 3</option>
+					<option value="span4">Span 4</option>
+					<option value="span5">Span 5</option>
+					<option value="span6">Span 6</option>
+					<option value="span7">Span 7</option>
+					<option value="span8">Span 8</option>
+					<option value="span9">Span 9</option>
+					<option value="span10">Span 10</option>
+					<option value="span11">Span 11</option>
+					<option value="span12">Span 12</option>
+				</group>
+				<group label="Vertical">
+					<option value="clearfix">Clearfix</option>
+				</group>
 			</field>
 		</fieldset>
 
@@ -41,9 +73,25 @@
 				<option value="pull-left">Left</option>
 				<option value="">Top</option>
 			</field>
-			<field name="field_view3" type="list" default="clearfix" label="Field View">
-				<option value="pull-left">Horizontal</option>
-				<option value="clearfix">Vertical</option>
+			<field name="field_view3" type="groupedlist" default="clearfix" label="Field View">
+				<group label="Horizontal">
+					<option value="pull-left">Pull left</option>
+					<option value="span1">Span 1</option>
+					<option value="span2">Span 2</option>
+					<option value="span3">Span 3</option>
+					<option value="span4">Span 4</option>
+					<option value="span5">Span 5</option>
+					<option value="span6">Span 6</option>
+					<option value="span7">Span 7</option>
+					<option value="span8">Span 8</option>
+					<option value="span9">Span 9</option>
+					<option value="span10">Span 10</option>
+					<option value="span11">Span 11</option>
+					<option value="span12">Span 12</option>
+				</group>
+				<group label="Vertical">
+					<option value="clearfix">Clearfix</option>
+				</group>
 			</field>
 		</fieldset>
 
@@ -53,9 +101,25 @@
 				<option value="pull-left">Left</option>
 				<option value="">Top</option>
 			</field>
-			<field name="field_view4" type="list" default="clearfix" label="Field View">
-				<option value="pull-left">Horizontal</option>
-				<option value="clearfix">Vertical</option>
+			<field name="field_view4" type="groupedlist" default="clearfix" label="Field View">
+				<group label="Horizontal">
+					<option value="pull-left">Pull left</option>
+					<option value="span1">Span 1</option>
+					<option value="span2">Span 2</option>
+					<option value="span3">Span 3</option>
+					<option value="span4">Span 4</option>
+					<option value="span5">Span 5</option>
+					<option value="span6">Span 6</option>
+					<option value="span7">Span 7</option>
+					<option value="span8">Span 8</option>
+					<option value="span9">Span 9</option>
+					<option value="span10">Span 10</option>
+					<option value="span11">Span 11</option>
+					<option value="span12">Span 12</option>
+				</group>
+				<group label="Vertical">
+					<option value="clearfix">Clearfix</option>
+				</group>
 			</field>
 		</fieldset>
 

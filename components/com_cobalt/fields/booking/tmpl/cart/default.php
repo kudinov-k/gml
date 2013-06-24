@@ -29,6 +29,7 @@ defined('_JEXEC') or die;
 				<td><?php echo $rows[$row['record_id']]->title?></td>
 			<?php endif;?>
 			<?php foreach ($params->get('show_fields', array()) AS $key):?>
+				<?php //if (!isset($rows[$row['record_id']]->fields_by_key[$key])) continue;?>
 				<?php $field = $rows[$row['record_id']]->fields_by_key[$key];?>
 				<td class="<?php echo $field->params->get('core.field_class')?>"><?php if(isset($field->result)) echo $field->result ;?></td>
 			<?php endforeach;?>
