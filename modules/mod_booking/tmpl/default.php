@@ -70,6 +70,16 @@ $doc->addScriptDeclaration("
 		}
 	};
 
+	Cobalt.recalc = function(rid, price){
+		var amount = parseInt($('#amount'+rid).val());
+		var new_price = amount * price;
+		$('#sum'+rid).html(new_price.toFixed(2));
+	};
+
+	Cobalt.recalcAll = function(){
+
+	};
+
 })( jQuery );
 ");
 ?>

@@ -17,8 +17,9 @@ defined('_JEXEC') or die;
 				<th><?php echo JText::_('CTITLE');?></th>
 			<?php endif;?>
 			<?php foreach ($params->get('show_fields', array()) AS $key):?>
+				<?php if (!isset($total_fields[$key])) continue;?>
 				<th width="1%" nowrap="nowrap">
-					<?php echo $rows[$row['record_id']]->fields_by_key[$key]->label;?>
+					<?php echo $total_fields[$key]->label;?>
 			<?php endforeach;?>
 		</tr>
 	</thead>
@@ -26,13 +27,19 @@ defined('_JEXEC') or die;
 		<?php foreach ($cart as $key_r => $row) : ?>
 		<tr>
 			<?php if($params->get('show_title')):?>
-				<td><?php echo $rows[$row['record_id']]->title?></td>
+				<td><?php echo $rows[$row]->title?></td>
 			<?php endif;?>
 			<?php foreach ($params->get('show_fields', array()) AS $key):?>
-				<?php //if (!isset($rows[$row['record_id']]->fields_by_key[$key])) continue;?>
-				<?php $field = $rows[$row['record_id']]->fields_by_key[$key];?>
+				<?php if (!isset($rows[$row]->fields_by_key[$key])) continue;?>
+				<?php $field = $rows[$row]->fields_by_key[$key];?>
 				<td class="<?php echo $field->params->get('core.field_class')?>"><?php if(isset($field->result)) echo $field->result ;?></td>
 			<?php endforeach;?>
+			<td>
+				<input type="text" id="amount<?php echo $row;?>"  name="amount<?php echo $row;?>" value="1" onchange="Cobalt.recalc(<?php echo $row;?>, parseFloat('<?php echo $rows[$row]->fields_by_key[$params->get('price_id')]->value;?>'));" class="input-mini"/>
+			</td>
+			<td>
+				<span id="sum<?php echo $row;?>" class="input-mini"><?php echo $rows[$row]->fields_by_key[$params->get('price_id')]->value;?></span>
+			</td>
 			<td>
 				<a href="javascript:void(0);" onclick="Cobalt.removeFromCart(<?php echo $key_r;?>);"><span class="label label-important">X</span></a>
 			</td>
@@ -40,6 +47,21 @@ defined('_JEXEC') or die;
 		<?php endforeach; ?>
 	</tbody>
 </table>
+<hr />
+<div id="summary">
+	<?php echo JText::_('SUMMARY');?>
+	<span id="cart_summary"></span>
+</div>
+<hr />
+<div>
+	<div>
+		<?php echo JText::_('DATEIN');?>
+	</div>
+	<div>
+		<?php echo JText::_('DATEOUT');?>
+	</div>
+</div>
+
 
 <?php if (count($cart)):?>
 <button id="order_cart" class="btn btn-small btn-success" onclick=""><?php echo JText::_('ORDER');?></button>

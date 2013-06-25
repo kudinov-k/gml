@@ -77,7 +77,8 @@ class JFormFieldCBooking extends CFormField
 	{
 		$app = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
-		$cart[] = array('record_id' => $post['record_id'], 'dates' => $post['dates']);
+		//$cart[] = array('record_id' => $post['record_id'], 'dates' => $post['dates']);
+		$cart[] = $post['record_id'];
 
 		$app->setUserState('booking_cart', $cart);
 
@@ -102,18 +103,29 @@ class JFormFieldCBooking extends CFormField
 		$app	= JFactory::getApplication();
 		$rows	= array();
 		$r_ids	= array();
+		$total_fields = array();
 
 		$params = new JRegistry($app->input->getString('mod_params', ''));
+
 		$cart = $app->getUserState('booking_cart', array());
+		$cart = array_unique($cart);
+
+		//var_dump($cart);exit;
 
 		$model = JModelLegacy::getInstance('Record', 'CobaltModel');
 		foreach ($cart as $row)
 		{
-			if(in_array($row['record_id'], $r_ids)) continue;
+			//if(in_array($row['record_id'], $r_ids)) continue;
 
-			$record = ItemsStore::getRecord($row['record_id']);
-			$rows[$row['record_id']] = $model->_prepareItem($record, 'list');
-			$r_ids[] = $row['record_id'];
+			$record = ItemsStore::getRecord($row);
+			$rows[$row] = $model->_prepareItem($record, 'list');
+			//$r_ids[] = $row['record_id'];
+
+			foreach($rows[$row]->fields_by_id as $field)
+			{
+				$key = $field->key;
+				$total_fields[$key] = $field;
+			}
 		}
 
 		ob_start();
