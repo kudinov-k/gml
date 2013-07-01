@@ -11,7 +11,7 @@
 		</fieldset>
 
 		<fieldset name="general" label="FS_GENERAL">
-
+			<field 	name="email" type="text" label="Email for receive orders" required="required" />
 		</fieldset>
 	</fields>
 

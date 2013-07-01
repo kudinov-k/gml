@@ -70,10 +70,12 @@ $total = 0;
 <div class="clearfix"></div>
 
 <script type="text/javascript">
+var day_diff = 1;
 (function($) {
 	$.datepicker.setDefaults( $.datepicker.regional[ "ru" ] );
 
 	var today = new Date();
+
 	var first = $('#datein').datepicker({
 		minDate: 0,
 		firstDay: 1,
@@ -91,14 +93,14 @@ $total = 0;
 
 	function calcDays()
 	{
-		var date_first = $('#dateint').datepicker('getDate');
+		var date_first = $('#datein').datepicker('getDate');
 		var date_second = $('#dateout').datepicker('getDate');
+
+		day_diff = parseInt(date_second - date_first)/(1000*3600*24);
+
+		Cobalt.recalcAll();
 	}
 
 })( jQuery );
 </script>
 
-
-<?php if (count($cart)):?>
-<button id="order_cart" class="btn btn-small btn-success" onclick=""><?php echo JText::_('ORDER');?></button>
-<?php endif;?>

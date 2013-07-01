@@ -28,7 +28,7 @@ $doc->addScriptDeclaration("
 			}).done(function(json) {
 				$('#booking_cart').html(json.result);
 				$( '#order_cart' ).button().click(function() {
-					$( '#dialog-form' ).dialog( 'open' );
+					//$( '#dialog-form' ).dialog( 'open' );
 				});
 
 				$('#order_cart').removeClass();
@@ -55,7 +55,7 @@ $doc->addScriptDeclaration("
 		}
 	};
 
-	Cobalt.orderCart = function(){
+	Cobalt.orderCart = function(allFields){
 		if($('#booking_cart').length)
 		{
 			$.ajax({
@@ -64,7 +64,8 @@ $doc->addScriptDeclaration("
 				dataType: 'json',
 				data:{
 					field_id: ".$params->get('booking_id').",
-					func: 'orderCart'
+					func: 'orderCart',
+					allFields:allFields
 				}
 			}).done(function(json) {
 				alert('".JText::_('ORDER_ACCEPT')."');
@@ -87,41 +88,49 @@ $doc->addScriptDeclaration("
 			total += parseFloat($(this).html());
 		});
 
+		if(day_diff && day_diff > 0)
+		{
+			total *= day_diff;
+		}
+
 		$('#cart_summary').html(total.toFixed(2));
 	};
 
 })( jQuery );
 ");
 ?>
-<div id="booking_cart" class="stats-module<?php echo $moduleclass_sfx; ?>">
+<form method="post" id="orderForm" action="<?php echo JRoute::_('index.php?option=com_cobalt&task=ajax.field_call&field_id='.$params->get('booking_id').'&func=orderCart')?>">
+	<div id="booking_cart" class="stats-module<?php echo $moduleclass_sfx; ?>">
 
-</div>
+	</div>
 
-<div id="dialog-form" title="Create new user">
-	 <p class="validateTips">All form fields are required.</p>
-	<form>
-		<fieldset>
-			<label for="name">Name</label>
-			<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
-			<label for="email">Email</label>
-			<input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
-			<label for="password">Password</label>
-			<input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
-		</fieldset>
-	</form>
-</div>
+	<div id="dialog-form" title="Create new user" class="collapse">
+		 <p class="validateTips">All form fields are required.</p>
+			<fieldset>
+				<label for="name">Name</label>
+				<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+				<label for="email">Email</label>
+				<input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
+				<label for="telephone">Telephone</label>
+				<input type="text" name="telephone" id="telephone" value="" class="text ui-widget-content ui-corner-all" />
+			</fieldset>
+	</div>
+	<button id="order_cart" type="button" class="btn btn-small btn-success"><?php echo JText::_('ORDER');?></button>
+</form>
+
 
  <script>
 !(function($) {
 	var name = $( "#name" ),
 	email = $( "#email" ),
-	password = $( "#password" ),
-	allFields = $( [] ).add( name ).add( email ).add( password ),
+	telephone = $( "#telephone" ),
+	allFields = $( [] ).add( name ).add( email ).add( telephone ),
 	tips = $( ".validateTips" );
 	function updateTips( t ) {
 		tips.text( t ).addClass( "ui-state-highlight" );
 		setTimeout(function() {
 			tips.removeClass( "ui-state-highlight", 1500 );
+			allFields.removeClass( "ui-state-error" );
 		}, 500 );
 	}
 	function checkLength( o, n, min, max ) {
@@ -145,40 +154,29 @@ $doc->addScriptDeclaration("
 		}
 	}
 
-	$( "#dialog-form" ).dialog({
-		autoOpen: false,
-		height: 300,
-		width: 350,
-		modal: true,
-		buttons: {
-			"Create an account": function() {
-				var bValid = true;
-				allFields.removeClass( "ui-state-error" );
-				bValid = bValid && checkLength( name, "username", 3, 16 );
-				bValid = bValid && checkLength( email, "email", 6, 80 );
-				bValid = bValid && checkLength( password, "password", 5, 16 );
-				bValid = bValid && checkRegexp( name, /^[a-z]([0-9a-z_])+$/i, "Username may consist of a-z, 0-9, underscores, begin with a letter." );
-				// From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
-				bValid = bValid && checkRegexp( email, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );
-				bValid = bValid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
-				if ( bValid ) {
-					$( this ).dialog( "close" );
-				}
-			},
-			Cancel: function() {
-				$( this ).dialog( "close" );
-			}
-		},
-		close: function() {
-			allFields.val( "" ).removeClass( "ui-state-error" );
+
+	$('#order_cart').click(function() {
+		if(!jQuery('#dialog-form').hasClass('in'))
+		{
+			jQuery('#dialog-form').collapse();
+			return;
+		}
+		var bValid = true;
+
+		bValid = bValid && checkLength( name, "username", 3, 16 );
+		bValid = bValid && checkLength( email, "email", 6, 80 );
+		bValid = bValid && checkLength( telephone, "telephone", 5, 16 );
+		bValid = bValid && checkRegexp( name, /^[a-z]([0-9a-z_])+$/i, "Username may consist of a-z, 0-9, underscores, begin with a letter." );
+		// From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+		bValid = bValid && checkRegexp( email, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );
+		bValid = bValid && checkRegexp( telephone, /^([0-9])+$/, "Telephone field only allow : 0-9" );
+		if ( bValid ) {
+			$('#orderForm').submit();
 		}
 	});
 
 })(jQuery);
 </script>
-
-
-
 
 <script type="text/javascript">
 jQuery(document).ready(function() {

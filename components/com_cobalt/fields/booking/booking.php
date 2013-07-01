@@ -140,6 +140,11 @@ class JFormFieldCBooking extends CFormField
 		$app  = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
 
+		var_dump($app->input->post);exit();
+
+		$form = $app->input->getString('allFields');
+		$form = json_decode($form);
+
 		$order = JTable::getInstance('Booking_order', 'CobaltTable');
 		//$order->bind();
 		$order->check();
@@ -165,6 +170,8 @@ class JFormFieldCBooking extends CFormField
 				}
 			}
 			$app->setUserState('booking_cart', array());
+
+
 		}
 		AjaxHelper::send(1);
 	}

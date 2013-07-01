@@ -19,7 +19,7 @@ $doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/date
 $doc->addScript(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/js/jquery-ui-1.10.3.custom.js');
 $doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/css/mdp.css');
 
-// $cart = $app->getUserState('booking_cart');
+//$cart = $app->getUserState('booking_cart');
 // $rows = modBookingHelper::getList($params);
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 require JModuleHelper::getLayoutPath('mod_booking', $params->get('layout', 'default'));
