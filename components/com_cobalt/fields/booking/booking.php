@@ -140,12 +140,24 @@ class JFormFieldCBooking extends CFormField
 		$app  = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
 
-		var_dump($app->input->post);exit();
+		//var_dump($this->params->get('params.email'));exit();
 
-		$form = $app->input->getString('allFields');
-		$form = json_decode($form);
+		$config = JFactory::getConfig();
 
-		$order = JTable::getInstance('Booking_order', 'CobaltTable');
+		$mailer = JFactory::getMailer();
+		$mailer->setSubject('Order - '.$config->get('sitename'));
+		$mailer->SetFrom($config->get('mailfrom'));
+		$mailer->IsHTML(true);
+		$mailer->AddAddress($this->params->get('params.email'));
+		$mailer->AddAddress($app->input->post->getString('email'));
+
+		$body = '';
+
+		$mailer->setBody('<h2>Заказ</h2>');
+		$mailer->Send();
+
+
+		/*$order = JTable::getInstance('Booking_order', 'CobaltTable');
 		//$order->bind();
 		$order->check();
 		if($order->store())
@@ -172,7 +184,7 @@ class JFormFieldCBooking extends CFormField
 			$app->setUserState('booking_cart', array());
 
 
-		}
+		}*/
 		AjaxHelper::send(1);
 	}
 }
