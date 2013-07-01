@@ -51,37 +51,49 @@ $total = 0;
 	</tbody>
 </table>
 <hr />
-<div id="summary">
+<div id="summary" class="pull-right">
 	<?php echo JText::_('SUMMARY');?>
 	<span id="cart_summary"><?php echo $total;?></span> руб.
-<hr />
 </div>
-<div>
-	<div>
-		<?php echo JText::_('DATEIN');?>
-		<input type="text" name="datein" id="datein" />
-	</div>
-	<div>
+<div class="clearfix"></div>
+<hr />
+<div class="pull-right">
+	<div class="pull-right">
 		<?php echo JText::_('DATEOUT');?>
 		<input type="text" name="dateout" id="dateout" />
 	</div>
+	<div class="pull-right">
+		<?php echo JText::_('DATEIN');?>
+		<input type="text" name="datein" id="datein" />
+	</div>
 </div>
+<div class="clearfix"></div>
 
 <script type="text/javascript">
 (function($) {
 	$.datepicker.setDefaults( $.datepicker.regional[ "ru" ] );
 
 	var today = new Date();
-	$('#datein').datepicker({
+	var first = $('#datein').datepicker({
 		minDate: 0,
 		firstDay: 1,
-		dateFormat: "D, MM d, yy"
+		dateFormat: "D, MM d, yy",
+		autoSize: true,
+		onSelect:calcDays,
 	});
-	$('#dateout').datepicker({
+	var second = $('#dateout').datepicker({
 		minDate: 1,
 		firstDay: 1,
-		dateFormat: "D, MM d, yy"
+		dateFormat: "D, MM d, yy",
+		autoSize: true,
+		onSelect:calcDays,
 	});
+
+	function calcDays()
+	{
+		var date_first = $('#dateint').datepicker('getDate');
+		var date_second = $('#dateout').datepicker('getDate');
+	}
 
 })( jQuery );
 </script>
