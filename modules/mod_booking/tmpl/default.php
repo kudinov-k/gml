@@ -30,6 +30,9 @@ $doc->addScriptDeclaration("
 				$( '#order_cart' ).button().click(function() {
 					$( '#dialog-form' ).dialog( 'open' );
 				});
+
+				$('#order_cart').removeClass();
+				$('#order_cart').addClass('btn btn-small btn-success');
 			});
 		}
 	};
@@ -74,10 +77,17 @@ $doc->addScriptDeclaration("
 		var amount = parseInt($('#amount'+rid).val());
 		var new_price = amount * price;
 		$('#sum'+rid).html(new_price.toFixed(2));
+		Cobalt.recalcAll();
 	};
 
 	Cobalt.recalcAll = function(){
+		var sums = $('span[id^=\'sum\']');
+		var total = 0;
+		sums.each(function(){
+			total += parseFloat($(this).html());
+		});
 
+		$('#cart_summary').html(total.toFixed(2));
 	};
 
 })( jQuery );

@@ -8,6 +8,8 @@
  */
 
 defined('_JEXEC') or die;
+
+$total = 0;
 ?>
 
 <table class="table table-striped">
@@ -25,6 +27,7 @@ defined('_JEXEC') or die;
 	</thead>
 	<tbody>
 		<?php foreach ($cart as $key_r => $row) : ?>
+			<?php $total += $rows[$row]->fields_by_key[$params->get('price_id')]->value;?>
 		<tr>
 			<?php if($params->get('show_title')):?>
 				<td><?php echo $rows[$row]->title?></td>
@@ -50,17 +53,38 @@ defined('_JEXEC') or die;
 <hr />
 <div id="summary">
 	<?php echo JText::_('SUMMARY');?>
-	<span id="cart_summary"></span>
-</div>
+	<span id="cart_summary"><?php echo $total;?></span> руб.
 <hr />
+</div>
 <div>
 	<div>
 		<?php echo JText::_('DATEIN');?>
+		<input type="text" name="datein" id="datein" />
 	</div>
 	<div>
 		<?php echo JText::_('DATEOUT');?>
+		<input type="text" name="dateout" id="dateout" />
 	</div>
 </div>
+
+<script type="text/javascript">
+(function($) {
+	$.datepicker.setDefaults( $.datepicker.regional[ "ru" ] );
+
+	var today = new Date();
+	$('#datein').datepicker({
+		minDate: 0,
+		firstDay: 1,
+		dateFormat: "D, MM d, yy"
+	});
+	$('#dateout').datepicker({
+		minDate: 1,
+		firstDay: 1,
+		dateFormat: "D, MM d, yy"
+	});
+
+})( jQuery );
+</script>
 
 
 <?php if (count($cart)):?>
