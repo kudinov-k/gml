@@ -139,10 +139,12 @@ class JFormFieldCBooking extends CFormField
 	{
 		$app  = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
+		$body = '';
 
 		//var_dump($this->params->get('params.email'));exit();
 
 		$config = JFactory::getConfig();
+		$mod_params = new JRegistry($app->input->getString('mod_params', ''));
 
 		$mailer = JFactory::getMailer();
 		$mailer->setSubject('Order - '.$config->get('sitename'));
@@ -151,9 +153,60 @@ class JFormFieldCBooking extends CFormField
 		$mailer->AddAddress($this->params->get('params.email'));
 		$mailer->AddAddress($app->input->post->getString('email'));
 
-		$body = '';
+		$model = JModelLegacy::getInstance('Record', 'CobaltModel');
 
-		$mailer->setBody('<h2>Заказ</h2>');
+		$body .= '<h2>Заказ</h2>';
+		$body .= '<table>';
+		$body .= '<tr>';
+		$body .= '<th>Название</th>';
+		$body .= '<th>Количество</th>';
+		$body .= '<th>Цена</th>';
+		$body .= '<th>Сумма</th>';
+		$body .= '</tr>';
+
+
+		foreach ($cart as $row)
+		{
+			//if(in_array($row['record_id'], $r_ids)) continue;
+
+			$record = ItemsStore::getRecord($row);
+			$prep_record = $model->_prepareItem($record, 'list');
+			$fields = json_decode($record->fields, true);
+			$price = $prep_record->fields_by_key[$mod_params->get('price_id')]->value;
+			$body .= '<tr>';
+			$body .= '<th>'.$record->title.'</th>';
+			$body .= '<th>'.$app->input->post->getString('amount'.$record->id).'</th>';
+			$body .= '<th>'.$price.'</th>';
+			$body .= '<th>'.$price * $app->input->post->getString('amount'.$record->id).'</th>';
+			$body .= '</tr>';
+
+		}
+
+		$body .= '</table>';
+
+		$body .= '<table>
+				<tr>
+					<td>Date In</td><td>'.$app->input->post->getString('datein').'</td>
+				</tr>
+				<tr>
+					<td>Date Out</td><td>'.$app->input->post->getString('dateout').'</td>
+				</tr>
+				<tr>
+					<td>Общая сумма</td><td>---</td>
+				</tr>
+				<tr>
+					<td>Name</td><td>'.$app->input->post->getString('name').'</td>
+				</tr>
+				<tr>
+					<td>Email</td><td>'.$app->input->post->getString('email').'</td>
+				</tr>
+				<tr>
+					<td>Telephone</td><td>'.$app->input->post->getString('telephone').'</td>
+				</tr>
+				</table>';
+
+
+		$mailer->setBody($body);
 		$mailer->Send();
 
 

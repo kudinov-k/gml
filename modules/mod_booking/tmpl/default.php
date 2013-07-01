@@ -116,6 +116,7 @@ $doc->addScriptDeclaration("
 			</fieldset>
 	</div>
 	<button id="order_cart" type="button" class="btn btn-small btn-success"><?php echo JText::_('ORDER');?></button>
+	<input type="hidden" name="mod_params" value="<?php echo htmlspecialchars($params->toString());?>" />
 </form>
 
 
