@@ -27,7 +27,7 @@ $total = 0;
 	</thead>
 	<tbody>
 		<?php foreach ($cart as $key_r => $row) : ?>
-			<?php $total += $rows[$row]->fields_by_key[$params->get('price_id')]->value;?>
+			<?php $total += str_replace(',', '', $rows[$row]->fields_by_key[$params->get('price_id')]->value);?>
 		<tr>
 			<?php if($params->get('show_title')):?>
 				<td><?php echo $rows[$row]->title?></td>
