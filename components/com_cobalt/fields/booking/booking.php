@@ -192,7 +192,7 @@ class JFormFieldCBooking extends CFormField
 					<td>Date Out</td><td>'.$app->input->post->getString('dateout').'</td>
 				</tr>
 				<tr>
-					<td>Общая сумма</td><td>---</td>
+					<td>Общая сумма</td><td>'.$app->input->post->getString('total_summary').'</td>
 				</tr>
 				<tr>
 					<td>Name</td><td>'.$app->input->post->getString('name').'</td>
@@ -238,6 +238,9 @@ class JFormFieldCBooking extends CFormField
 
 
 		}*/
-		AjaxHelper::send(1);
+		$app->setUserState('booking_cart', array());
+		$app->redirect(base64_decode($app->input->post->getString('return')), 'Заказ успешно отправлен');
+
+		return true;
 	}
 }

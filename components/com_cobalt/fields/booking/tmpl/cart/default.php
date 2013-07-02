@@ -38,7 +38,7 @@ $total = 0;
 				<td class="<?php echo $field->params->get('core.field_class')?>"><?php if(isset($field->result)) echo $field->result ;?></td>
 			<?php endforeach;?>
 			<td>
-				<input type="text" id="amount<?php echo $row;?>"  name="amount<?php echo $row;?>" value="1" onchange="Cobalt.recalc(<?php echo $row;?>, parseFloat('<?php echo $rows[$row]->fields_by_key[$params->get('price_id')]->value;?>'));" class="input-mini"/>
+				<input type="text" id="amount<?php echo $row;?>"  name="amount<?php echo $row;?>" value="1" onchange="Cobalt.recalc(<?php echo $row;?>, '<?php echo $rows[$row]->fields_by_key[$params->get('price_id')]->value;?>');" class="input-mini"/>
 			</td>
 			<td>
 				<span id="sum<?php echo $row;?>" class="input-mini"><?php echo $rows[$row]->fields_by_key[$params->get('price_id')]->value;?></span>
@@ -53,7 +53,7 @@ $total = 0;
 <hr />
 <div id="summary" class="pull-right">
 	<?php echo JText::_('SUMMARY');?>
-	<span id="cart_summary"><?php echo $total;?></span> руб.
+	<span id="cart_summary"><input type="text" id="total_summary" readonly="readonly" name="total_summary" value="<?php echo $total;?>" class="input-mini" /></span> руб.
 </div>
 <div class="clearfix"></div>
 <hr />
