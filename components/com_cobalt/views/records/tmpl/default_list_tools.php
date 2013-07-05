@@ -9,8 +9,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 $this->params = $this->tmpl_params['list'];
-//$total_fields_keys = $this->total_fields_keys;
-//$fh = new FieldHelper($this->fields_keys_by_id, $this->total_fields_keys);
 JHtml::_('dropdown.init');
 $this->pos1 = $this->params->get('tmpl_params.field_id_position_1', array());
 $this->pos2 = $this->params->get('tmpl_params.field_id_position_2', array());
@@ -20,6 +18,8 @@ $this->pos4 = $this->params->get('tmpl_params.field_id_position_4', array());
 $cols = $this->params->get('tmpl_params.columns', 3);
 $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 $prefix = $this->params->get('tmpl_params.prefix', '');
+
+$this->showed_field_ids = array();
 
 $db = JFactory::getDbo();
 $query = $db->getQuery(true);
@@ -36,7 +36,6 @@ if($this->params->get('tmpl_params.show_cats', 1))
 	}
 	ArrayHelper::clean_r($cats);
 	$cats[0] = 0;
-// var_dump($cats);exit;
 	$query->select('c.*');
 	$query->from('#__js_res_categories AS c');
 	$query->where('c.id IN (' . implode(',', array_keys($cats)) . ')');
@@ -150,6 +149,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 <?php
 function getItemBlock($item, $that, $core_fields = '')
 {
+	$that->showed_field_ids = array();
 	$class = '';
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 	if($item->featured)
@@ -180,10 +180,8 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos1)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos1">
 					<?php foreach ($that->pos1 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 						<?php getField($field, $that, 1)?>
-						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
 				</div>
 			<?php endif;?>
@@ -201,12 +199,10 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos2)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos2">
 					<?php foreach ($that->pos2 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 
 						<?php getField($field, $that, 2)?>
 
-						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
 				</div>
 			<?php endif;?>
@@ -215,10 +211,8 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos3)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos3">
 					<?php foreach ($that->pos3 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 						<?php getField($field, $that, 3)?>
-						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
 				</div>
 			<?php endif;?>
@@ -228,17 +222,20 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos4)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos4">
 					<?php foreach ($that->pos4 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(empty($item->fields_by_key[$id]->result)) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 						<?php getField($field, $that, 4)?>
-						<?php if(isset($that->total_fields_keys[$id])) unset($that->total_fields_keys[$id]);?>
 					<?php endforeach;?>
 				</div>
 			<?php endif;?>
 
-			<?php if(count($that->total_fields_keys)):?>
+			<?php
+				$all_fields = array_keys($item->fields_by_id);
+				$diff = array_diff($all_fields, $that->showed_field_ids);
+			?>
+			<?php if(count($diff)):?>
 			<dl class="text-overflow">
-			<?php foreach ($that->total_fields_keys AS $field):?>
+			<?php foreach ($diff AS $field_id):?>
+				<?php $field = $item->fields_by_key[$id];?>
 				<?php if(empty($field->result)) continue;?>
 					<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
 						<?php if($field->params->get('core.icon') && $that->params->get('tmpl_params.item_icon_fields')):?>
@@ -273,6 +270,8 @@ function getItemBlock($item, $that, $core_fields = '')
 
 function getField($field, $that, $position = 1)
 {
+	$that->showed_field_ids[] = $field->id;
+	if(empty($field->result)) return;
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 ?>
 <div class="<?php echo $prefix;?>field-block <?php echo $that->params->get('tmpl_params.field_view'.$position, 'clearfix')?>">
