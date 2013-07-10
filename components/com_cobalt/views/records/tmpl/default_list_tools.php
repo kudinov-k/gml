@@ -180,6 +180,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos1)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos1">
 					<?php foreach ($that->pos1 AS $id): $id = $that->fields_keys_by_id[$id];?>
+						<?php if(!isset($item->fields_by_key[$id])) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 						<?php getField($field, $that, 1)?>
 					<?php endforeach;?>
@@ -199,6 +200,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos2)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos2">
 					<?php foreach ($that->pos2 AS $id): $id = $that->fields_keys_by_id[$id];?>
+						<?php if(!isset($item->fields_by_key[$id])) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 
 						<?php getField($field, $that, 2)?>
@@ -211,6 +213,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos3)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos3">
 					<?php foreach ($that->pos3 AS $id): $id = $that->fields_keys_by_id[$id];?>
+						<?php if(!isset($item->fields_by_key[$id])) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 						<?php getField($field, $that, 3)?>
 					<?php endforeach;?>
@@ -222,6 +225,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($that->pos4)): ?>
 				<div class="text-overflow <?php echo $prefix;?>fields-pos4">
 					<?php foreach ($that->pos4 AS $id): $id = $that->fields_keys_by_id[$id];?>
+						<?php if(!isset($item->fields_by_key[$id])) continue;?>
 						<?php $field = $item->fields_by_key[$id];?>
 						<?php getField($field, $that, 4)?>
 					<?php endforeach;?>

@@ -112,7 +112,7 @@ class JFormFieldCBooking extends CFormField
 
 		//var_dump($cart);exit;
 
-		$model = JModelLegacy::getInstance('Record', 'CobaltModel');
+		/*$model = JModelLegacy::getInstance('Record', 'CobaltModel');
 		foreach ($cart as $row)
 		{
 			//if(in_array($row['record_id'], $r_ids)) continue;
@@ -130,7 +130,26 @@ class JFormFieldCBooking extends CFormField
 
 		ob_start();
 		include (__DIR__).'/tmpl/cart/default.php';
-		$content = ob_get_clean();
+		$content = ob_get_clean();*/
+
+
+		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
+		$api = new CobaltApi();
+		$result = $api->records(
+		$params->get('section_id'),
+		'all',
+		$params->get('orderby'),
+		0,
+		null,
+		null,
+		500,
+		$params->get('tmpl'),
+		false,
+		false,
+		0,
+		$cart);
+
+		$content = $result['html'];
 
 		AjaxHelper::send($content);
 	}

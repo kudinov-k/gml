@@ -1,0 +1,99 @@
+/*.mytips-tip, .mytips .tip {
+	width: 450px;
+	z-index: 13000;
+}
+ 
+.mytips-title, .tip-title {
+	font-weight: bold;
+	margin: 0;
+	padding: 8px 8px 4px;
+	background-color: #d8d8d8;
+}
+ 
+.mytips-text, .tip-text {
+	font-size: 12px;
+	padding: 4px 8px 8px;
+	background-color: #f1f1f1;
+	border-bottom: 3px solid #d8d8d8;
+	border-left: 3px solid #d8d8d8;
+	border-right: 3px solid #d8d8d8;
+}
+
+table.calendar_small th, 
+table.calendar_small .sectiontableentry1 td, 
+table.calendar_small .sectiontableentry0 td, 
+table.calendar_small .sectiontableentry2 td
+{
+	font-size: smaller;
+	height: 15px;
+	padding: 5px;
+}
+table.calendar_middle th, 
+table.calendar_middle .sectiontableentry1 td, 
+table.calendar_middle .sectiontableentry0 td, 
+table.calendar_middle .sectiontableentry2 td
+{
+	font-size: normal;
+	height: 20px;
+	padding: 5px;
+}
+
+table.calendar_big .sectiontableentry1 td, 
+table.calendar_big .sectiontableentry0 td, 
+table.calendar_big .sectiontableentry2 td
+{
+	font-size: 24px;
+	padding: 20px;
+}
+.calendar_big th, .calendar_middle th, .calendar_small th
+{
+	font-size: 14px;
+	pading: 10px;
+	height: 30px;	
+	background-color: #666;
+	color: #ffffff;
+}
+
+.calendar_big td
+{
+	font-size: 24px;
+	padding: 30px;
+}
+.calendar_has_items
+{
+	color: red;
+	background-color: wheat;
+	border: 1px solid gray;	
+}
+.calendar_hour
+{
+	font-size: 24px;
+}
+#cal_records_list ul.calendar_hour_list, #cal_records_list .calendar_hour_list li, .mytips .calendar_hour_list li {
+	
+	padding: 0px;
+	margin: 0px;
+	line-height: 35px;
+	display: list-item;
+}
+#cal_records_list ul.calendar_hour_list
+{
+	list-style-type: none;
+}
+.mytips .calendar_hour_list {
+	margin-left: 20px;
+}
+#calendar_today 
+{
+	border: 1px solid gray;
+	background-color: silver; 
+}
+.calendar-month {
+	padding: 10px;
+}
+
+.cal_controls { 
+	border: 1px solid silver;
+	border-radius:5px;
+	padding: 3px;
+}*/
