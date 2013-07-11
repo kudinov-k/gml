@@ -78,7 +78,7 @@ class JFormFieldCBooking extends CFormField
 		$app = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
 		//$cart[] = array('record_id' => $post['record_id'], 'dates' => $post['dates']);
-		$cart[] = $post['record_id'];
+		$cart[$post['record_id']] = $post['record_id'];
 
 		$app->setUserState('booking_cart', $cart);
 
