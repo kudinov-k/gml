@@ -132,7 +132,6 @@ class JFormFieldCBooking extends CFormField
 		include (__DIR__).'/tmpl/cart/default.php';
 		$content = ob_get_clean();*/
 
-
 		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
 		$api = new CobaltApi();
 		$result = $api->records(

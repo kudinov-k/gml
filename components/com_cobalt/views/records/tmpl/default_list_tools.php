@@ -239,7 +239,8 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($diff)):?>
 			<dl class="text-overflow">
 			<?php foreach ($diff AS $field_id):?>
-				<?php $field = $item->fields_by_key[$id];?>
+				<?php if(!isset($item->fields_by_key[$field_id])) continue;?>
+				<?php $field = $item->fields_by_key[$field_id];?>
 				<?php if(empty($field->result)) continue;?>
 					<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
 						<?php if($field->params->get('core.icon') && $that->params->get('tmpl_params.item_icon_fields')):?>

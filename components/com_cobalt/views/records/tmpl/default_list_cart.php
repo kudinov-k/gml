@@ -24,7 +24,7 @@ $this->showed_field_ids = array();
 $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 $this->mod_params = new JRegistry($app->input->getString('mod_params', ''));
-
+$total = 0;
 
 if($this->params->get('tmpl_params.show_cats', 1))
 {
@@ -47,7 +47,40 @@ if($this->params->get('tmpl_params.show_cats', 1))
 }
 ?>
 
+<script type="text/javascript">
+var day_diff = 1;
+(function($) {
+	$.datepicker.setDefaults( $.datepicker.regional[ "ru" ] );
 
+	var today = new Date();
+
+	var first = $('#datein').datepicker({
+		minDate: 0,
+		firstDay: 1,
+		dateFormat: "D, MM d, yy",
+		autoSize: true,
+		onSelect:calcDays,
+	});
+	var second = $('#dateout').datepicker({
+		minDate: 1,
+		firstDay: 1,
+		dateFormat: "D, MM d, yy",
+		autoSize: true,
+		onSelect:calcDays,
+	});
+
+	function calcDays()
+	{
+		var date_first = $('#datein').datepicker('getDate');
+		var date_second = $('#dateout').datepicker('getDate');
+
+		day_diff = parseInt(date_second - date_first)/(1000*3600*24);
+
+		Cobalt.recalcAll();
+	}
+
+})( jQuery );
+</script>
 <style>
 	.user-info {
 		margin: 0;
@@ -100,6 +133,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 
 		<?php $k = 0;?>
 		<?php foreach ($sorted[$cat_id] AS $item):?>
+		<?php $total += str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value);?>
 
 			<?php if($k % $cols == 0):?>
 				<div class="row-fluid">
@@ -125,7 +159,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 
 	<?php $k = 0;?>
 	<?php foreach ($this->items AS $item):?>
-
+		<?php $total += str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value);?>
 		<?php if($k % $cols == 0):?>
 			<div class="row-fluid">
 		<?php endif;?>
@@ -145,6 +179,24 @@ if($this->params->get('tmpl_params.show_cats', 1))
 	<?php endif;?>
 
 <?php endif;?>
+<div class="clearfix"></div>
+<hr />
+<div id="summary" class="pull-right">
+	<?php echo JText::_('SUMMARY');?>
+	<span id="cart_summary"><input type="text" id="total_summary" readonly="readonly" name="total_summary" value="<?php echo $total;?>" class="input-mini" /></span> руб.
+</div>
+<div class="clearfix"></div>
+<hr />
+<div class="pull-right">
+	<div class="pull-right">
+		<?php echo JText::_('DATEOUT');?>
+		<input type="text" name="dateout" id="dateout" />
+	</div>
+	<div class="pull-right">
+		<?php echo JText::_('DATEIN');?>
+		<input type="text" name="datein" id="datein" />
+	</div>
+</div>
 <div class="clearfix"></div>
 
 
@@ -222,7 +274,7 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 			<div class="book-fields">
-				<table class="table table-striped">
+				<table class="table">
 					<thead>
 						<tr>
 							<th><?php echo JText::_('Amount');?></th>
@@ -264,7 +316,8 @@ function getItemBlock($item, $that, $core_fields = '')
 			<?php if(count($diff)):?>
 			<dl class="text-overflow">
 			<?php foreach ($diff AS $field_id):?>
-				<?php $field = $item->fields_by_key[$id];?>
+				<?php if(!isset($item->fields_by_key[$field_id])) continue;?>
+				<?php $field = $item->fields_by_key[$field_id];?>
 				<?php if(empty($field->result)) continue;?>
 					<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
 						<?php if($field->params->get('core.icon') && $that->params->get('tmpl_params.item_icon_fields')):?>
@@ -291,7 +344,6 @@ function getItemBlock($item, $that, $core_fields = '')
 			</div>
 		<?php endif;?>
 		<!-- End Title position 2-->
-
 	</div>
 <?php
 	return ob_get_clean();
