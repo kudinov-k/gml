@@ -19,8 +19,6 @@ $cols = $this->params->get('tmpl_params.columns', 3);
 $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 $prefix = $this->params->get('tmpl_params.prefix', '');
 
-$this->showed_field_ids = array();
-
 $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 
@@ -149,7 +147,6 @@ if($this->params->get('tmpl_params.show_cats', 1))
 <?php
 function getItemBlock($item, $that, $core_fields = '')
 {
-	$that->showed_field_ids = array();
 	$class = '';
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 	if($item->featured)
@@ -232,29 +229,6 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 
-			<?php
-				$all_fields = array_keys($item->fields_by_id);
-				$diff = array_diff($all_fields, $that->showed_field_ids);
-			?>
-			<?php if(count($diff)):?>
-			<dl class="text-overflow">
-			<?php foreach ($diff AS $field_id):?>
-				<?php if(!isset($item->fields_by_key[$field_id])) continue;?>
-				<?php $field = $item->fields_by_key[$field_id];?>
-				<?php if(empty($field->result)) continue;?>
-					<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
-						<?php if($field->params->get('core.icon') && $that->params->get('tmpl_params.item_icon_fields')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_($field->label);?>
-					</dt>
-					<dd>
-						<?php echo $field->result;?>
-					</dd>
-			<?php endforeach;?>
-			</dl>
-			<?php endif;?>
-
 			<?php if($that->params->get('tmpl_params.show_core', 1)):?>
 				<?php getCoreFields($item, $that);?>
 			<?php endif;?>
@@ -275,7 +249,6 @@ function getItemBlock($item, $that, $core_fields = '')
 
 function getField($field, $that, $position = 1)
 {
-	$that->showed_field_ids[] = $field->id;
 	if(empty($field->result)) return;
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 ?>
