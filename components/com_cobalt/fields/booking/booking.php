@@ -78,7 +78,10 @@ class JFormFieldCBooking extends CFormField
 		$app = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
 		//$cart[] = array('record_id' => $post['record_id'], 'dates' => $post['dates']);
-		$cart[$post['record_id']] = $post['record_id'];
+		if(!isset($cart[$post['record_id']]))
+			$cart[$post['record_id']] = 1;
+		else
+			$cart[$post['record_id']]++;
 
 		$app->setUserState('booking_cart', $cart);
 
@@ -108,29 +111,10 @@ class JFormFieldCBooking extends CFormField
 		$params = new JRegistry($app->input->getString('mod_params', ''));
 
 		$cart = $app->getUserState('booking_cart', array());
-		$cart = array_unique($cart);
+		$cart = array_keys($cart);
 
-		//var_dump($cart);exit;
-
-		/*$model = JModelLegacy::getInstance('Record', 'CobaltModel');
-		foreach ($cart as $row)
-		{
-			//if(in_array($row['record_id'], $r_ids)) continue;
-
-			$record = ItemsStore::getRecord($row);
-			$rows[$row] = $model->_prepareItem($record, 'list');
-			//$r_ids[] = $row['record_id'];
-
-			foreach($rows[$row]->fields_by_id as $field)
-			{
-				$key = $field->key;
-				$total_fields[$key] = $field;
-			}
-		}
-
-		ob_start();
-		include (__DIR__).'/tmpl/cart/default.php';
-		$content = ob_get_clean();*/
+		if(empty($cart))
+			AjaxHelper::send('');
 
 		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
 		$api = new CobaltApi();

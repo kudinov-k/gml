@@ -19,7 +19,8 @@ $cols = $this->params->get('tmpl_params.columns', 3);
 $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 $prefix = $this->params->get('tmpl_params.prefix', '');
 
-$this->showed_field_ids = array();
+$app = JFactory::getApplication();
+$this->cart = $app->getUserState('booking_cart', array());
 
 $db = JFactory::getDbo();
 $query = $db->getQuery(true);
@@ -133,7 +134,7 @@ var day_diff = 1;
 
 		<?php $k = 0;?>
 		<?php foreach ($sorted[$cat_id] AS $item):?>
-		<?php $total += str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value);?>
+		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '.', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
 
 			<?php if($k % $cols == 0):?>
 				<div class="row-fluid">
@@ -159,7 +160,7 @@ var day_diff = 1;
 
 	<?php $k = 0;?>
 	<?php foreach ($this->items AS $item):?>
-		<?php $total += str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value);?>
+		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '.', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
 		<?php if($k % $cols == 0):?>
 			<div class="row-fluid">
 		<?php endif;?>
@@ -203,7 +204,6 @@ var day_diff = 1;
 <?php
 function getItemBlock($item, $that, $core_fields = '')
 {
-	$that->showed_field_ids = array();
 	$class = '';
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 	if($item->featured)
@@ -284,10 +284,10 @@ function getItemBlock($item, $that, $core_fields = '')
 					<tbody>
 						<tr>
 							<td>
-								<input type="text" id="amount<?php echo $item->id;?>"  name="amount<?php echo $item->id;?>" value="1" onchange="Cobalt.recalc(<?php echo $item->id;?>, '<?php echo $item->fields_by_key[$that->mod_params->get('price_id')]->value;?>');" class="input-mini"/>
+								<input type="text" id="amount<?php echo $item->id;?>"  name="amount<?php echo $item->id;?>" value="<?php echo $that->cart[$item->id];?>" onchange="Cobalt.recalc(<?php echo $item->id;?>, '<?php echo $item->fields_by_key[$that->mod_params->get('price_id')]->value;?>');" class="input-mini"/>
 							</td>
 							<td>
-								<span id="sum<?php echo $item->id;?>" class="input-mini"><?php echo $item->fields_by_key[$that->mod_params->get('price_id')]->value;?></span>
+								<span id="sum<?php echo $item->id;?>" class="input-mini"><?php echo $that->cart[$item->id] * $item->fields_by_key[$that->mod_params->get('price_id')]->value;?></span>
 							</td>
 							<td>
 								<a href="javascript:void(0);" onclick="Cobalt.removeFromCart(<?php echo $item->id;?>);"><span class="label label-important">X</span></a>
@@ -309,29 +309,6 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 
-			<?php
-				$all_fields = array_keys($item->fields_by_id);
-				$diff = array_diff($all_fields, $that->showed_field_ids);
-			?>
-			<?php if(count($diff)):?>
-			<dl class="text-overflow">
-			<?php foreach ($diff AS $field_id):?>
-				<?php if(!isset($item->fields_by_key[$field_id])) continue;?>
-				<?php $field = $item->fields_by_key[$field_id];?>
-				<?php if(empty($field->result)) continue;?>
-					<dt id="<?php echo $field->id;?>-lbl" for="field_<?php echo $field->id;?>" class="<?php echo $field->class;?>" >
-						<?php if($field->params->get('core.icon') && $that->params->get('tmpl_params.item_icon_fields')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/<?php echo $field->params->get('core.icon');?>" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_($field->label);?>
-					</dt>
-					<dd>
-						<?php echo $field->result;?>
-					</dd>
-			<?php endforeach;?>
-			</dl>
-			<?php endif;?>
-
 			<?php if($that->params->get('tmpl_params.show_core', 1)):?>
 				<?php getCoreFields($item, $that);?>
 			<?php endif;?>
@@ -351,7 +328,6 @@ function getItemBlock($item, $that, $core_fields = '')
 
 function getField($field, $that, $position = 1)
 {
-	$that->showed_field_ids[] = $field->id;
 	if(empty($field->result)) return;
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 ?>
