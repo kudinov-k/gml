@@ -575,3 +575,6 @@ components/com_cobalt/*
 
 components/com_cobalt/fields/*
 !booking
+/administrator
+/libraries
+/plugins
