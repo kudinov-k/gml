@@ -137,7 +137,7 @@ var day_diff = 1;
 
 		<?php $k = 0;?>
 		<?php foreach ($sorted[$cat_id] AS $item):?>
-		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '.', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
+		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
 
 			<?php if($k % $cols == 0):?>
 				<div class="row-fluid">
@@ -163,7 +163,7 @@ var day_diff = 1;
 
 	<?php $k = 0;?>
 	<?php foreach ($this->items AS $item):?>
-		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '.', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
+		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
 		<?php if($k % $cols == 0):?>
 			<div class="row-fluid">
 		<?php endif;?>
@@ -292,9 +292,15 @@ function getItemBlock($item, $that, $core_fields = '')
 							<td>
 							<?php
 							$book_field = $that->rmodel->getField($that->mod_params->get('booking_id'), $item->type_id, $item->id);
+							if(!is_array($book_field->value))
+							{
+								settype($book_field->value, 'array');
+								$book_field->value['amount'] = $book_field->value[0];
+								$book_field->value['book_type'] = 0;
+							}
 							?>
 								<span id="sum<?php echo $item->id;?>" rel="<?php echo $book_field->value['book_type'];?>" class="input-mini">
-								<?php echo $that->cart[$item->id] * $item->fields_by_key[$that->mod_params->get('price_id')]->value;?>
+								<?php echo $that->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$that->mod_params->get('price_id')]->value));?>
 								</span>
 							</td>
 							<td>

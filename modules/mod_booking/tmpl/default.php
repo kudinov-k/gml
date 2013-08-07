@@ -75,7 +75,7 @@ $doc->addScriptDeclaration("
 	};
 
 	Cobalt.recalc = function(rid, price){
-		price = price.replace(',', '.');
+		price = price.replace(',', '');
 		var amount = parseInt($('#amount'+rid).val());
 		var new_price = amount * parseFloat(price);
 		$('#sum'+rid).html(new_price.toFixed(2));
@@ -85,7 +85,14 @@ $doc->addScriptDeclaration("
 	Cobalt.recalcAll = function(){
 		var sums = $('span[id^=\'sum\']');
 		var total = 0;
+		var total_fix = 0;
 		sums.each(function(){
+			console.log($(this));
+			if($(this).attr('rel') == '1')
+			{
+				total_fix += parseFloat($(this).html());
+				return;
+			}
 			total += parseFloat($(this).html());
 		});
 
@@ -93,6 +100,8 @@ $doc->addScriptDeclaration("
 		{
 			total *= day_diff;
 		}
+
+		total += total_fix;
 
 		$('#total_summary').val(total.toFixed(2));
 	};

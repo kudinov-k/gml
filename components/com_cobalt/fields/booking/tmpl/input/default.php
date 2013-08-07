@@ -23,13 +23,12 @@ settype($this->value, 'array');
 
 if (!isset($this->value['amount']))
 {
-	$this->value['amount'] = $this->value ? $this->value : 1;
+	$this->value['amount'] = isset($this->value[0]) ? $this->value[0] : 1;
 }
 if (!isset($this->value['book_type']))
 {
 	$this->value['book_type'] = 0;
 }
-var_dump($this->value);
 ?>
 
 

@@ -24,7 +24,7 @@ $doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/date
 </div>
 
 <script type="text/javascript">
-	var booking_amount_<?php echo $this->id;?> = <?php echo $this->value ? $this->value : 0;?>;
+	var booking_amount_<?php echo $this->id;?> = <?php echo isset($this->value['amount']) ? $this->value['amount'] : 1;?>;
 
 	function bookingAddToCart<?php echo $record->id?>(){
 		jQuery.ajax({
