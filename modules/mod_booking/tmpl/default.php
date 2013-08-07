@@ -75,7 +75,7 @@ $doc->addScriptDeclaration("
 	};
 
 	Cobalt.recalc = function(rid, price){
-		price = price.replace(',', '');
+		price = price.replace(',', '.');
 		var amount = parseInt($('#amount'+rid).val());
 		var new_price = amount * parseFloat(price);
 		$('#sum'+rid).html(new_price.toFixed(2));

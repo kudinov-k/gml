@@ -19,6 +19,7 @@ $cols = $this->params->get('tmpl_params.columns', 3);
 $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 $prefix = $this->params->get('tmpl_params.prefix', '');
 
+
 $app = JFactory::getApplication();
 $this->cart = $app->getUserState('booking_cart', array());
 
@@ -26,6 +27,8 @@ $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 $this->mod_params = new JRegistry($app->input->getString('mod_params', ''));
 $total = 0;
+
+$this->rmodel = JModelLegacy::getInstance('Fields', 'CobaltModel');
 
 if($this->params->get('tmpl_params.show_cats', 1))
 {
@@ -287,7 +290,12 @@ function getItemBlock($item, $that, $core_fields = '')
 								<input type="text" id="amount<?php echo $item->id;?>"  name="amount<?php echo $item->id;?>" value="<?php echo $that->cart[$item->id];?>" onchange="Cobalt.recalc(<?php echo $item->id;?>, '<?php echo $item->fields_by_key[$that->mod_params->get('price_id')]->value;?>');" class="input-mini"/>
 							</td>
 							<td>
-								<span id="sum<?php echo $item->id;?>" class="input-mini"><?php echo $that->cart[$item->id] * $item->fields_by_key[$that->mod_params->get('price_id')]->value;?></span>
+							<?php
+							$book_field = $that->rmodel->getField($that->mod_params->get('booking_id'), $item->type_id, $item->id);
+							?>
+								<span id="sum<?php echo $item->id;?>" rel="<?php echo $book_field->value['book_type'];?>" class="input-mini">
+								<?php echo $that->cart[$item->id] * $item->fields_by_key[$that->mod_params->get('price_id')]->value;?>
+								</span>
 							</td>
 							<td>
 								<a href="javascript:void(0);" onclick="Cobalt.removeFromCart(<?php echo $item->id;?>);"><span class="label label-important">X</span></a>

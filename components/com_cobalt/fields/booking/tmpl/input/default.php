@@ -19,8 +19,26 @@ if ($this->required)
 
 $class = ' class="' . implode(' ', $class) . '"';
 
+settype($this->value, 'array');
+
+if (!isset($this->value['amount']))
+{
+	$this->value['amount'] = $this->value ? $this->value : 1;
+}
+if (!isset($this->value['book_type']))
+{
+	$this->value['book_type'] = 0;
+}
+var_dump($this->value);
 ?>
 
 
-<input type="text" name="jform[fields][<?php echo $this->id;?>]" id="field_<?php echo $this->id;?>" value="<?php echo $this->value;?>"
+<input type="text" name="jform[fields][<?php echo $this->id;?>][amount]" id="field_<?php echo $this->id;?>" value="<?php echo $this->value['amount'];?>"
 	<?php echo $class .$required;?>>
+
+	<br /><br />
+
+<select name="jform[fields][<?php echo $this->id;?>][book_type]" id="field_<?php echo $this->id;?>_type">
+	<option value="0">CRENT</option>
+	<option value="1" <?php if($this->value['book_type']): ?> selected="selected"<?php endif;?>>CSALE</option>
+</select>

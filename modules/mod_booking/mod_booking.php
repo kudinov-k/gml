@@ -13,6 +13,14 @@ defined('_JEXEC') or die;
 include_once JPATH_ROOT . '/components/com_cobalt/api.php';
 require_once __DIR__ . '/helper.php';
 
+$app = JFactory::getApplication();
+$view = $app->input->get('view');
+
+if ($view == 'edit' || $view == 'form')
+{
+	return;
+}
+
 $doc = JFactory::getDocument();
 
 $doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/css/redmond/jquery-ui-1.10.3.custom.css');

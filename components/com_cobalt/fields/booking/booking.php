@@ -28,7 +28,7 @@ class JFormFieldCBooking extends CFormField
 		return $js;
 	}
 
-	public function onPrepareSave($value, $record, $type, $section)
+	/*public function onPrepareSave($value, $record, $type, $section)
 	{
 		$mask = $this->params->get('params.mask', 0);
 		if ($mask->mask_type && $this->params->get('params.show_mask', 1))
@@ -38,7 +38,7 @@ class JFormFieldCBooking extends CFormField
 		}
 		$filter = JFilterInput::getInstance();
 		return $filter->clean($value);
-	}
+	}*/
 
 	public function onRenderFull($record, $type, $section)
 	{
@@ -52,7 +52,7 @@ class JFormFieldCBooking extends CFormField
 
 	private function _render($view, $record, $type, $section)
 	{
-		$this->disable_dates = $this->_getDisabledDates($record);
+		//$this->disable_dates = $this->_getDisabledDates($record);
 		return $this->_display_output($view, $record, $type, $section);
 	}
 
@@ -68,7 +68,7 @@ class JFormFieldCBooking extends CFormField
 		$query->where('b.field_id = '.$this->id);
 		$query->where('b.record_id = '.$record->id);
 		$query->group('b.date');
-		$query->having('COUNT(b.id) >= '.$this->value);
+		$query->having('COUNT(b.id) >= '.$this->value['amount']);
 		$db->setQuery($query);
 		return $db->loadColumn();
 	}
