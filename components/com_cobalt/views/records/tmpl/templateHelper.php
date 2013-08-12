@@ -30,10 +30,10 @@ class CustomTemplateHelper
 
 		ob_start();
 		?>
-		<div class="<?php echo $prefix;?>item-block row-fluid<?php echo $class;?>">
+		<div class="<?php echo $prefix;?>item-block row-fluid<?php echo $class;?> relative_ctrls has-context">
 			<!-- Title position 1-->
 			<?php if($that->params->get('tmpl_params.title_position', 1) == 1):?>
-				<div class="<?php echo $prefix;?>title-position1 relative_ctrls has-context">
+				<div class="<?php echo $prefix;?>title-position1">
 					<?php self::getTitle($item, $that);?>
 				</div>
 			<?php endif;?>
@@ -54,7 +54,7 @@ class CustomTemplateHelper
 
 				<!-- Title position 3-->
 				<?php if($that->params->get('tmpl_params.title_position', 1) == 3):?>
-					<div class="<?php echo $prefix;?>title-position3 relative_ctrls has-context">
+					<div class="<?php echo $prefix;?>title-position3">
 					<?php self::getTitle($item, $that);?>
 				</div>
 				<?php endif;?>
@@ -84,14 +84,6 @@ class CustomTemplateHelper
 				<?php endif;?>
 			</div>
 			<div class="clearfix"></div>
-			<!-- Title position 4-->
-			<?php if($that->params->get('tmpl_params.title_position', 1) == 4):?>
-				<div class="<?php echo $prefix;?>title-position4 relative_ctrls has-context">
-					<?php self::getTitle($item, $that);?>
-				</div>
-				<div class="clearfix"></div>
-			<?php endif;?>
-			<!-- End Title position 4-->
 			<div class="<?php echo $prefix;?>position4">
 				<?php if(count($that->pos4)): ?>
 					<div class="text-overflow <?php echo $prefix;?>fields-pos4">
@@ -110,7 +102,7 @@ class CustomTemplateHelper
 
 			<!-- Title position 2-->
 			<?php if($that->params->get('tmpl_params.title_position', 1) == 2):?>
-				<div class="<?php echo $prefix;?>title-position2 relative_ctrls has-context">
+				<div class="<?php echo $prefix;?>title-position2">
 					<?php self::getTitle($item, $that);?>
 				</div>
 			<?php endif;?>

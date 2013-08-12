@@ -578,3 +578,5 @@ components/com_cobalt/fields/*
 /administrator
 /libraries
 /plugins
+/README.md
+/robots.txt.dist
