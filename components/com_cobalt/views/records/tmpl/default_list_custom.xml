@@ -141,6 +141,7 @@
 				<option value="1">Position 1</option>
 				<option value="2">Position 2</option>
 				<option value="3">Position 3</option>
+				<option value="4">Position 4</option>
 			</field>
             <field name="title_length" label="Number of Title Characters" type="text" size="3" default="" />
             <field name="title_end" label="Title end symbols" type="text" size="3" default="..." />
