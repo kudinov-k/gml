@@ -30,10 +30,10 @@ class CustomTemplateHelper
 
 		ob_start();
 		?>
-		<div class="<?php echo $prefix;?>item-block row-fluid<?php echo $class;?>">
+		<div class="<?php echo $prefix;?>item-block row-fluid<?php echo $class;?> relative_ctrls has-context">
 			<!-- Title position 1-->
 			<?php if($that->params->get('tmpl_params.title_position', 1) == 1):?>
-				<div class="<?php echo $prefix;?>title-position1 relative_ctrls has-context">
+				<div class="<?php echo $prefix;?>title-position1">
 					<?php self::getTitle($item, $that);?>
 				</div>
 			<?php endif;?>
@@ -54,7 +54,7 @@ class CustomTemplateHelper
 
 				<!-- Title position 3-->
 				<?php if($that->params->get('tmpl_params.title_position', 1) == 3):?>
-					<div class="<?php echo $prefix;?>title-position3 relative_ctrls has-context">
+					<div class="<?php echo $prefix;?>title-position3">
 					<?php self::getTitle($item, $that);?>
 				</div>
 				<?php endif;?>
@@ -102,7 +102,7 @@ class CustomTemplateHelper
 
 			<!-- Title position 2-->
 			<?php if($that->params->get('tmpl_params.title_position', 1) == 2):?>
-				<div class="<?php echo $prefix;?>title-position2 relative_ctrls has-context">
+				<div class="<?php echo $prefix;?>title-position2">
 					<?php self::getTitle($item, $that);?>
 				</div>
 			<?php endif;?>
