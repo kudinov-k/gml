@@ -11,6 +11,32 @@ defined('_JEXEC') or die('Restricted access');
 class CustomTemplateHelper
 {
 
+	public static function getItems($this, $items, $cols)
+	{
+		$span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);?>
+		<?php $k = 0;?>
+		<?php foreach ($items AS $item):?>
+
+			<?php if($k % $cols == 0):?>
+				<div class="row-fluid">
+			<?php endif;?>
+
+			<div class="span<?php echo $span[$cols]?> ">
+				<?php echo self::getItemBlock($item, $this); ?>
+			</div>
+
+			<?php if($k % $cols == ($cols - 1)):?>
+				</div>
+			<?php endif; $k++;?>
+
+		<?php endforeach;?>
+
+		<?php if($k % $cols != 0):?>
+			</div>
+		<?php endif;?>
+	<?php
+	}
+
 	public static function getItemBlock($item, $that)
 	{
 		$class = '';

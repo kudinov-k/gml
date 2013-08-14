@@ -134,6 +134,7 @@
 				<option value="0">CNO</option>
 				<option value="1">CYES</option>
 			</field>
+			<field name="cat_columns" type="text" default="1" label="Categories columns amount" />
 		</fieldset>
 
 		<fieldset name="lbls" label="Title">

@@ -18,7 +18,8 @@ $this->pos3 = $this->params->get('tmpl_params.field_id_position_3', array());
 $this->pos4 = $this->params->get('tmpl_params.field_id_position_4', array());
 
 $cols = $this->params->get('tmpl_params.columns', 3);
-$span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
+$cat_cols = $this->params->get('tmpl_params.cat_columns', 3);
+
 $prefix = $this->params->get('tmpl_params.prefix', 'default');
 
 $doc = JFactory::getDocument();
@@ -39,12 +40,12 @@ if($this->params->get('tmpl_params.show_cats', 1))
 	}
 	ArrayHelper::clean_r($cats);
 	$cats[0] = 0;
-	$query->select('c.*');
+	$query->select('c.id, c.parent_id');
 	$query->from('#__js_res_categories AS c');
 	$query->where('c.id IN (' . implode(',', array_keys($cats)) . ')');
 	$query->order('c.lft');
 	$db->setQuery($query);
-	$sorted_cats = $db->loadColumn();
+	$sorted_cats = $db->loadObjectList('id');
 }
 ?>
 
@@ -83,67 +84,77 @@ if($this->params->get('tmpl_params.show_cats', 1))
 <?php endif;?>
 
 <?php if($this->params->get('tmpl_params.show_cats', 1)):?>
-	<?php foreach ($sorted_cats AS $cat_id):?>
+	<?php if($this->params->get('tmpl_params.cat_columns', 1) > 1):?>
+
+		<?php foreach ($sorted_cats AS $cat_id => $cat){
+			$sorted_up[$cat->parent_id][] = $cat_id;
+		}?>
 
 		<?php
-		$parents = $cats_model->getParentsObjectsByChild($cat_id);
-		$f_cat = 0;
-		foreach ($parents as $parent)
-		{
-			if(in_array($parent->id, $showed_parents)) {$f_cat++; continue;}
+		foreach ($sorted_up AS $parent_id => $cats){
+
+			$parent = $cats_model->getCategoriesById($parent_id);
 			?>
-			<div class="<?php echo $prefix;?><?php if(!$f_cat):?>category<?php $f_cat++; else:?>subcategory<?php endif;?>"><?php echo $parent->title;?></div>
+			<div class="<?php echo $prefix;?>category"><?php echo $parent[0]->title;?></div>
+			<div class="<?php echo $prefix;?>category_descr"><?php echo $parent[0]->description;?></div>
 			<div class="clearfix"></div>
 			<?php
-			$showed_parents[] = $parent->id;
-		}
-		?>
 
-		<?php $k = 0;?>
-		<?php foreach ($sorted[$cat_id] AS $item):?>
+			$span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);?>
+			<?php $ck = 0;?>
+			<?php foreach ($cats AS $cat_id):?>
 
-			<?php if($k % $cols == 0):?>
-				<div class="row-fluid">
+				<?php $cat = $cats_model->getCategoriesById($cat_id);?>
+
+				<?php if($ck % $cat_cols == 0):?>
+					<div class="row-fluid">
+				<?php endif;?>
+
+				<div class="span<?php echo $span[$cat_cols]?> ">
+					<div class="<?php echo $prefix;?>subcategory"><?php echo $cat[0]->title;?></div>
+					<div class="<?php echo $prefix;?>subcategory_descr"><?php echo $cat[0]->description;?></div>
+					<div class="clearfix"></div>
+					<?php echo CustomTemplateHelper::getItems($this, $sorted[$cat_id], $cols); ?>
+				</div>
+
+				<?php if($ck % $cat_cols == ($cat_cols - 1)):?>
+					</div>
+				<?php endif; $ck++;?>
+
+			<?php endforeach;?>
+
+			<?php if($ck % $cat_cols != 0):?>
+				</div>
 			<?php endif;?>
 
-			<div class="span<?php echo $span[$cols]?> ">
-				<?php echo CustomTemplateHelper::getItemBlock($item, $this); ?>
-			</div>
+	<?php }?>
 
-			<?php if($k % $cols == ($cols - 1)):?>
-				</div>
-			<?php endif; $k++;?>
+	<?php else: ?>
+		<?php foreach ($sorted_cats AS $cat_id => $cat):?>
+
+			<?php
+			$parents = $cats_model->getParentsObjectsByChild($cat_id);
+			$f_cat = 0;
+			foreach ($parents as $parent)
+			{
+				if(in_array($parent->id, $showed_parents)) {$f_cat++; continue;}
+				?>
+				<div class="<?php echo $prefix;?><?php if(!$f_cat):?>category<?php $f_cat++; else:?>subcategory<?php endif;?>"><?php echo $parent->title;?></div>
+				<div class="<?php echo $prefix;?><?php if(!$f_cat):?>category<?php $f_cat++; else:?>subcategory<?php endif;?>_descr"><?php echo $parent->description;?></div>
+				<div class="clearfix"></div>
+				<?php
+				$showed_parents[] = $parent->id;
+			}
+			?>
+
+			<?php echo CustomTemplateHelper::getItems($this, $sorted[$cat_id], $cols);?>
 
 		<?php endforeach;?>
-
-		<?php if($k % $cols != 0):?>
-			</div>
-		<?php endif;?>
-
-	<?php endforeach;?>
+	<?php endif;?>
 
 <?php else:?>
 
-	<?php $k = 0;?>
-	<?php foreach ($this->items AS $item):?>
-
-		<?php if($k % $cols == 0):?>
-			<div class="row-fluid">
-		<?php endif;?>
-
-		<div class="span<?php echo $span[$cols]?> ">
-			<?php echo CustomTemplateHelper::getItemBlock($item, $this); ?>
-		</div>
-
-		<?php if($k % $cols == ($cols - 1)):?>
-			</div>
-		<?php endif; $k++;?>
-
-	<?php endforeach;?>
-
-	<?php if($k % $cols != 0):?>
-		</div>
-	<?php endif;?>
+	<?php echo CustomTemplateHelper::getItems($this, $this->items, $cols);?>
 
 <?php endif;?>
 <div class="clearfix"></div>
