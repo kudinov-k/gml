@@ -110,6 +110,16 @@ class CustomTemplateHelper
 				<?php endif;?>
 			</div>
 			<div class="clearfix"></div>
+
+			<!-- Title position 4-->
+			<?php if($that->params->get('tmpl_params.title_position', 1) == 4):?>
+				<div class="<?php echo $prefix;?>title-position4">
+					<?php self::getTitle($item, $that);?>
+				</div>
+			<?php endif;?>
+			<!-- End Title position 4-->
+			<div class="clearfix"></div>
+
 			<div class="<?php echo $prefix;?>position4">
 				<?php if(count($that->pos4)): ?>
 					<div class="text-overflow <?php echo $prefix;?>fields-pos4">

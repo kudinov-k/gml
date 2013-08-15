@@ -7,10 +7,10 @@
  * @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 defined('_JEXEC') or die();
-$doc = JFactory::getDocument();
-$doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/css/redmond/jquery-ui-1.10.3.custom.css');
-$doc->addScript(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/js/jquery-ui-1.10.3.custom.js');
-$doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/css/mdp.css');
+// $doc = JFactory::getDocument();
+// $doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/css/redmond/jquery-ui-1.10.3.custom.css');
+// $doc->addScript(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/js/jquery-ui-1.10.3.custom.js');
+// $doc->addStyleSheet(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/css/mdp.css');
 //$doc->addScript(JUri::root(true).'/components/com_cobalt/fields/booking/datepicker/js/jquery-ui.multidatespicker.js');
 ?>
 
