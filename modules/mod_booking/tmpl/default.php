@@ -87,8 +87,7 @@ $doc->addScriptDeclaration("
 		var total = 0;
 		var total_fix = 0;
 		sums.each(function(){
-			console.log($(this));
-			if($(this).attr('rel') == '1')
+			if($(this).attr('rel') == 'sale')
 			{
 				total_fix += parseFloat($(this).html());
 				return;

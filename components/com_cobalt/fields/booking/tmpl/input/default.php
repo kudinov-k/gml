@@ -21,23 +21,21 @@ $class = ' class="' . implode(' ', $class) . '"';
 
 settype($this->value, 'array');
 
-if (!isset($this->value['amount']))
+if (!isset($this->value['rent']))
 {
-	$this->value['amount'] = isset($this->value[0]) ? $this->value[0] : 1;
+	$this->value['rent'] = isset($this->value[0]) ? $this->value[0] : 1;
 }
-if (!isset($this->value['book_type']))
+if (!isset($this->value['sale']))
 {
-	$this->value['book_type'] = 0;
+	$this->value['sale'] = 0;
 }
 ?>
 
-
-<input type="text" name="jform[fields][<?php echo $this->id;?>][amount]" id="field_<?php echo $this->id;?>" value="<?php echo $this->value['amount'];?>"
+<?php echo JText::_('CRENT');?>
+<input type="text" name="jform[fields][<?php echo $this->id;?>][rent]" id="field_<?php echo $this->id;?>" value="<?php echo $this->value['rent'];?>"
+	<?php echo $class .$required;?>>
+	<br /><br />
+<?php echo JText::_('CSALE');?>
+<input type="text" name="jform[fields][<?php echo $this->id;?>][sale]" id="field_<?php echo $this->id;?>" value="<?php echo $this->value['sale'];?>"
 	<?php echo $class .$required;?>>
 
-	<br /><br />
-
-<select name="jform[fields][<?php echo $this->id;?>][book_type]" id="field_<?php echo $this->id;?>_type">
-	<option value="0">CRENT</option>
-	<option value="1" <?php if($this->value['book_type']): ?> selected="selected"<?php endif;?>>CSALE</option>
-</select>

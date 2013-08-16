@@ -163,7 +163,17 @@ var day_diff = 1;
 
 	<?php $k = 0;?>
 	<?php foreach ($this->items AS $item):?>
-		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
+		<?php
+			$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
+			if(!is_array($this->book_field->value))
+			{
+				settype($this->book_field->value, 'array');
+				$this->book_field->value['rent'] = isset($this->book_field->value[0]) ? $this->book_field->value[0] : 1 ;
+				$this->book_field->value['sale'] = 0;
+			}
+		?>
+		<?php $total += @$this->cart['rent'][$item->id] * floatval(str_replace(',', '', $this->book_field->value['rent']));?>
+		<?php $total += @$this->cart['sale'][$item->id] * floatval(str_replace(',', '', $this->book_field->value['sale']));?>
 		<?php if($k % $cols == 0):?>
 			<div class="row-fluid">
 		<?php endif;?>
@@ -277,6 +287,16 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 			<div class="book-fields">
+				<?php
+
+				if(!isset($that->cart['rent'][$item->id])){
+					$that->cart['rent'][$item->id] = 0;
+				}
+				if(!isset($that->cart['sale'][$item->id])){
+					$that->cart['sale'][$item->id] = 0;
+				}
+
+				?>
 				<table class="table">
 					<thead>
 						<tr>
@@ -287,24 +307,31 @@ function getItemBlock($item, $that, $core_fields = '')
 					<tbody>
 						<tr>
 							<td>
-								<input type="text" id="amount<?php echo $item->id;?>"  name="amount<?php echo $item->id;?>" value="<?php echo $that->cart[$item->id];?>" onchange="Cobalt.recalc(<?php echo $item->id;?>, '<?php echo $item->fields_by_key[$that->mod_params->get('price_id')]->value;?>');" class="input-mini"/>
+								<?php echo JText::_('CRENT');?>
 							</td>
 							<td>
-							<?php
-							$book_field = $that->rmodel->getField($that->mod_params->get('booking_id'), $item->type_id, $item->id);
-							if(!is_array($book_field->value))
-							{
-								settype($book_field->value, 'array');
-								$book_field->value['amount'] = $book_field->value[0];
-								$book_field->value['book_type'] = 0;
-							}
-							?>
-								<span id="sum<?php echo $item->id;?>" rel="<?php echo $book_field->value['book_type'];?>" class="input-mini">
-								<?php echo $that->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$that->mod_params->get('price_id')]->value));?>
+								<input type="text" id="amount_rent<?php echo $item->id;?>"  name="amount_rent<?php echo $item->id;?>" value="<?php echo $that->cart['rent'][$item->id];?>" onchange="Cobalt.recalc('_rent'+<?php echo $item->id;?>, '<?php echo $that->book_field->value['rent'];?>');" class="input-mini"/>
+							</td>
+							<td>
+								<span id="sum_rent<?php echo $item->id;?>" rel="rent" class="input-mini">
+								<?php echo $that->cart['rent'][$item->id] * floatval(str_replace(',', '', $that->book_field->value['rent']));?>
 								</span>
 							</td>
-							<td>
+							<td rowspan="2" style="vertical-align: middle;">
 								<a href="javascript:void(0);" onclick="Cobalt.removeFromCart(<?php echo $item->id;?>);"><span class="label label-important">X</span></a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php echo JText::_('CSALE');?>
+							</td>
+							<td>
+								<input type="text" id="amount_sale<?php echo $item->id;?>"  name="amount_sale<?php echo $item->id;?>" value="<?php echo $that->cart['sale'][$item->id];?>" onchange="Cobalt.recalc('_sale'+<?php echo $item->id;?>, '<?php echo $that->book_field->value['sale'];?>');" class="input-mini"/>
+							</td>
+							<td>
+								<span id="sum_sale<?php echo $item->id;?>" rel="sale" class="input-mini">
+								<?php echo $that->cart['sale'][$item->id] * floatval(str_replace(',', '', $that->book_field->value['sale']));?>
+								</span>
 							</td>
 						</tr>
 					</tbody>

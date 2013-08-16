@@ -78,10 +78,10 @@ class JFormFieldCBooking extends CFormField
 		$app = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
 		//$cart[] = array('record_id' => $post['record_id'], 'dates' => $post['dates']);
-		if(!isset($cart[$post['record_id']]))
-			$cart[$post['record_id']] = 1;
+		if(!isset($cart[$post['type']][$post['record_id']]))
+			$cart[$post['type']][$post['record_id']] = 1;
 		else
-			$cart[$post['record_id']]++;
+			$cart[$post['type']][$post['record_id']]++;
 
 		$app->setUserState('booking_cart', $cart);
 
@@ -111,10 +111,13 @@ class JFormFieldCBooking extends CFormField
 		$params = new JRegistry($app->input->getString('mod_params', ''));
 
 		$cart = $app->getUserState('booking_cart', array());
-		$cart = array_keys($cart);
 
-		if(empty($cart))
+		if(empty($cart) || (empty($cart['rent']) || empty($cart['sale'])))
 			AjaxHelper::send('');
+
+		$c_rent = array_keys($cart['rent']);
+		$c_sale = array_keys($cart['sale']);
+		$cart = array_merge($c_rent,$c_sale);
 
 		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
 		$api = new CobaltApi();
@@ -142,8 +145,6 @@ class JFormFieldCBooking extends CFormField
 		$app  = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
 		$body = '';
-
-		//var_dump($this->params->get('params.email'));exit();
 
 		$config = JFactory::getConfig();
 		$mod_params = new JRegistry($app->input->getString('mod_params', ''));
