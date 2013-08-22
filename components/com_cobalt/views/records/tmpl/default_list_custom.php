@@ -101,31 +101,49 @@ if($this->params->get('tmpl_params.show_cats', 1))
 			<?php
 
 			$span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);?>
-			<?php $ck = 0;?>
-			<?php foreach ($cats AS $cat_id):?>
+			<?php while (count($cats) > 0):?>
+				<?php
+					$sliced_cats = array_splice($cats, 0, $cat_cols);
 
-				<?php $cat = $cats_model->getCategoriesById($cat_id);?>
+					if(empty($sliced_cats)) break;
+					$sco = $cats_model->getCategoriesById($sliced_cats);
+					$has_descr = false;
+					foreach ($sco as $sc){
+						$sliced_cats_objects[$sc->id] = $sc;
+						if ($sc->description)
+						{
+							$has_descr = true;
+						}
+					}
+				?>
 
-				<?php if($ck % $cat_cols == 0):?>
+				<div class="row-fluid">
+				<?php foreach ($sliced_cats as $cat_id):?>
+					<div class="span<?php echo $span[$cat_cols]?> ">
+						<div class="<?php echo $prefix;?>subcategory"><?php echo $sliced_cats_objects[$cat_id]->title;?></div>
+					</div>
+				<?php endforeach;?>
+				</div>
+
+				<?php if ($has_descr):?>
 					<div class="row-fluid">
+						<?php foreach ($sliced_cats as $cat_id):?>
+							<div class="span<?php echo $span[$cat_cols]?> <?php echo $prefix;?>subcategory_descr">
+								<?php echo $sliced_cats_objects[$cat_id]->description;?>
+							</div>
+						<?php endforeach;?>
+					</div>
 				<?php endif;?>
 
-				<div class="span<?php echo $span[$cat_cols]?> ">
-					<div class="<?php echo $prefix;?>subcategory"><?php echo $cat[0]->title;?></div>
-					<div class="<?php echo $prefix;?>subcategory_descr"><?php echo $cat[0]->description;?></div>
-					<div class="clearfix"></div>
-					<?php echo CustomTemplateHelper::getItems($this, $sorted[$cat_id], $cols); ?>
+				<div class="row-fluid">
+					<?php foreach ($sliced_cats as $cat_id):?>
+						<div class="span<?php echo $span[$cat_cols]?> <?php echo $prefix;?>item-bloks">
+							<?php echo CustomTemplateHelper::getItems($this, $sorted[$cat_id], $cols); ?>
+						</div>
+					<?php endforeach;?>
 				</div>
 
-				<?php if($ck % $cat_cols == ($cat_cols - 1)):?>
-					</div>
-				<?php endif; $ck++;?>
-
-			<?php endforeach;?>
-
-			<?php if($ck % $cat_cols != 0):?>
-				</div>
-			<?php endif;?>
+			<?php endwhile;?>
 
 	<?php }?>
 
