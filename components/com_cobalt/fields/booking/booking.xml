@@ -12,6 +12,25 @@
 
 		<fieldset name="general" label="FS_GENERAL">
 			<field 	name="email" type="text" label="Email for receive orders" required="required" />
+
+			<field 	name="unit" type="textarea" label="Базовая.ед.изм."  />
+			<field 	name="times" type="textarea" label="Ед.времени" />
+			<field 	name="tax" type="textarea" rows="6" label="Налоги" />
+			<field 	name="formula" type="textarea" rows="6" label="Формулы налогов" />
+
+			<field 	name="cur_input" type="list" label="Валюта ввода" >
+				<option value="USD">USD</option>
+				<option value="RUB">RUB</option>
+				<option value="EUR">EUR</option>
+			</field>
+			<field 	name="cur_output" type="list" label="Валюта вывода" >
+				<option value="USD">USD</option>
+				<option value="RUB">RUB</option>
+				<option value="EUR">EUR</option>
+			</field>
+
+			<field 	name="percent" type="text" label="Операционый %" />
+
 		</fieldset>
 	</fields>
 
