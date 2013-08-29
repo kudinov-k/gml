@@ -134,6 +134,10 @@
 				<option value="0">CNO</option>
 				<option value="1">CYES</option>
 			</field>
+			<field name="show_cats_descr" type="radio" class="btn-group"  default="1" label="Show categories description" >
+				<option value="0">CNO</option>
+				<option value="1">CYES</option>
+			</field>
 			<field name="cat_columns" type="text" default="1" label="Categories columns amount" />
 		</fieldset>
 

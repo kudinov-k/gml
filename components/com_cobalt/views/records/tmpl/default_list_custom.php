@@ -96,7 +96,9 @@ if($this->params->get('tmpl_params.show_cats', 1))
 			$parent = $cats_model->getCategoriesById($parent_id);
 			?>
 			<div class="<?php echo $prefix;?>category"><?php echo $parent[0]->title;?></div>
-			<div class="<?php echo $prefix;?>category_descr"><?php echo $parent[0]->description;?></div>
+			<?php if($this->params->get('tmpl_params.show_cats_descr', 1)):?>
+				<div class="<?php echo $prefix;?>category_descr"><?php echo $parent[0]->description;?></div>
+			<?php endif;?>
 			<div class="clearfix"></div>
 			<?php
 
@@ -125,7 +127,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 				<?php endforeach;?>
 				</div>
 
-				<?php if ($has_descr):?>
+				<?php if ($this->params->get('tmpl_params.show_cats_descr', 1) && $has_descr):?>
 					<div class="row-fluid">
 						<?php foreach ($sliced_cats as $cat_id):?>
 							<div class="span<?php echo $span[$cat_cols]?> <?php echo $prefix;?>subcategory_descr">
@@ -158,7 +160,9 @@ if($this->params->get('tmpl_params.show_cats', 1))
 				if(in_array($parent->id, $showed_parents)) {$f_cat++; continue;}
 				?>
 				<div class="<?php echo $prefix;?><?php if(!$f_cat):?>category<?php $f_cat++; else:?>subcategory<?php endif;?>"><?php echo $parent->title;?></div>
-				<div class="<?php echo $prefix;?><?php if(!$f_cat):?>category<?php $f_cat++; else:?>subcategory<?php endif;?>_descr"><?php echo $parent->description;?></div>
+				<?php if($this->params->get('tmpl_params.show_cats_descr', 1)):?>
+					<div class="<?php echo $prefix;?><?php if(!$f_cat):?>category<?php $f_cat++; else:?>subcategory<?php endif;?>_descr"><?php echo $parent->description;?></div>
+				<?php endif;?>
 				<div class="clearfix"></div>
 				<?php
 				$showed_parents[] = $parent->id;
