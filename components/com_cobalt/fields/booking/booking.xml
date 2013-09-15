@@ -14,7 +14,8 @@
 			<field 	name="email" type="text" label="Email for receive orders" required="required" />
 
 			<field 	name="unit" type="textarea" label="Базовая.ед.изм."  />
-			<field 	name="times" type="textarea" label="Ед.времени" />
+			<field 	name="times_h" type="textarea" label="Ед.времени (час)" />
+			<field 	name="times_d" type="textarea" label="Ед.времени (день)" />
 			<field 	name="tax" type="textarea" rows="6" label="Налоги" />
 			<field 	name="formula" type="textarea" rows="6" label="Формулы налогов" />
 

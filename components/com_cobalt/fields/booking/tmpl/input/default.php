@@ -70,7 +70,7 @@ $class = ' class="' . implode(' ', $class) . '"';
 			<td>
 				<table class="table">
 				<?php
-				$times = explode("\n", $this->params->get('params.times', ''));
+				$times = explode("\n", $this->params->get('params.times_d', ''));
 				foreach ($times as $key => $time):
 					$v = null;
 					if(isset($this->value['rent']['price'][$key]))
@@ -91,7 +91,7 @@ $class = ' class="' . implode(' ', $class) . '"';
 					$units = explode("\n", $this->params->get('params.tax', ''));
 					foreach ($units as $key => $unit):?>
 						<option
-							<?php  if(isset($this->value['tax'])/* && $this->value == $key*/):?>
+							<?php  if(isset($this->value['tax']) && in_array($key, $this->value['tax'])):?>
 								selected="selected"
 							<?php endif;?>
 
@@ -157,7 +157,7 @@ $class = ' class="' . implode(' ', $class) . '"';
 			<td>
 				<table>
 				<?php
-				$times = explode("\n", $this->params->get('params.times', ''));
+				$times = explode("\n", $this->params->get('params.times_h', ''));
 				foreach ($times as $key => $time):
 					$v = null;
 					if(isset($this->value['order']['price'][$key]))
