@@ -112,12 +112,13 @@ class JFormFieldCBooking extends CFormField
 
 		$cart = $app->getUserState('booking_cart', array());
 
-		if(empty($cart) || (empty($cart['rent']) || empty($cart['sale'])))
+		if(empty($cart) || (empty($cart['rent']) || empty($cart['sale']) || empty($cart['order'])))
 			AjaxHelper::send('');
 
 		$c_rent = array_keys($cart['rent']);
 		$c_sale = array_keys($cart['sale']);
-		$cart = array_merge($c_rent,$c_sale);
+		$c_order = array_keys($cart['order']);
+		$cart = array_merge($c_rent, $c_sale, $c_order);
 
 		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
 		$api = new CobaltApi();

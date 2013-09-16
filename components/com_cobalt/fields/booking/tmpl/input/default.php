@@ -71,11 +71,12 @@ $class = ' class="' . implode(' ', $class) . '"';
 				<table class="table">
 				<?php
 				$times = explode("\n", $this->params->get('params.times_d', ''));
+				$rent_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : array();
 				foreach ($times as $key => $time):
 					$v = null;
-					if(isset($this->value['rent']['price'][$key]))
+					if(isset($rent_price[$key]))
 					{
-						$v = $this->value['rent']['price'][$key];
+						$v = $rent_price[$key];
 					}
 				?>
 					<tr>
@@ -88,14 +89,16 @@ $class = ' class="' . implode(' ', $class) . '"';
 			<td>
 				<select name="jform[fields][<?php echo $this->id;?>][tax][]" multiple="multiplr" style="width:150px;">
 					<?php
-					$units = explode("\n", $this->params->get('params.tax', ''));
-					foreach ($units as $key => $unit):?>
+					$taxs = explode("\n", $this->params->get('params.tax', ''));
+					$v_taxes = $this->value['tax'];
+					settype($v_taxes, 'array');
+					foreach ($taxs as $key => $tax):?>
 						<option
-							<?php  if(isset($this->value['tax']) && in_array($key, $this->value['tax'])):?>
+							<?php  if(isset($this->value['tax']) && in_array($key, $v_taxes)):?>
 								selected="selected"
 							<?php endif;?>
 
-							value="<?php echo $key;?>"><?php echo $unit;?>
+							value="<?php echo $key;?>"><?php echo $tax;?>
 						</option>
 					<?php endforeach;?>
 				</select>
@@ -158,11 +161,12 @@ $class = ' class="' . implode(' ', $class) . '"';
 				<table>
 				<?php
 				$times = explode("\n", $this->params->get('params.times_h', ''));
+				$order_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : array();
 				foreach ($times as $key => $time):
 					$v = null;
-					if(isset($this->value['order']['price'][$key]))
+					if(isset($order_price[$key]))
 					{
-						$v = $this->value['order']['price'][$key];
+						$v = $order_price[$key];
 					}
 				?>
 					<tr>
