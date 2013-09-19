@@ -107,16 +107,7 @@ var day_diff = 1;
 	top:0px;
 	right: 0;
 }
-	</style>
-
-<?php if($this->params->get('tmpl_core.show_title_index')):?>
-	<h2><?php echo JText::_('CONTHISPAGE')?></h2>
-	<ul>
-		<?php foreach ($this->items AS $item):?>
-			<li><a href="#record<?php echo $item->id?>"><?php echo $item->title?></a></li>
-		<?php endforeach;?>
-	</ul>
-<?php endif;?>
+</style>
 
 <?php if($this->params->get('tmpl_params.show_cats', 1)):?>
 	<?php foreach ($sorted_cats AS $cat_id):?>
@@ -137,13 +128,25 @@ var day_diff = 1;
 
 		<?php $k = 0;?>
 		<?php foreach ($sorted[$cat_id] AS $item):?>
-		<?php $total += $this->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
+		<?php //$total += $this->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
 
 			<?php if($k % $cols == 0):?>
 				<div class="row-fluid">
 			<?php endif;?>
 
 			<div class="span<?php echo $span[$cols]?> ">
+
+				<?php
+					$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
+					var_dump($this->book_field->value);
+					if(!is_array($this->book_field->value))
+					{
+						settype($this->book_field->value, 'array');
+						$this->book_field->value['rent'] = isset($this->book_field->value[0]) ? $this->book_field->value[0] : 1 ;
+						$this->book_field->value['sale'] = 0;
+					}
+				?>
+
 				<?php echo getItemBlock($item, $this); ?>
 			</div>
 
@@ -165,6 +168,7 @@ var day_diff = 1;
 	<?php foreach ($this->items AS $item):?>
 		<?php
 			$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
+			var_dump($this->book_field);
 			if(!is_array($this->book_field->value))
 			{
 				settype($this->book_field->value, 'array');
@@ -193,12 +197,15 @@ var day_diff = 1;
 	<?php endif;?>
 
 <?php endif;?>
+
+<!--
 <div class="clearfix"></div>
 <hr />
 <div id="summary" class="pull-right">
 	<?php echo JText::_('SUMMARY');?>
 	<span id="cart_summary"><input type="text" id="total_summary" readonly="readonly" name="total_summary" value="<?php echo $total;?>" class="input-mini" /></span> руб.
 </div>
+
 <div class="clearfix"></div>
 <hr />
 <div class="pull-right">
@@ -210,7 +217,7 @@ var day_diff = 1;
 		<?php echo JText::_('DATEIN');?>
 		<input type="text" name="datein" id="datein" />
 	</div>
-</div>
+</div>-->
 <div class="clearfix"></div>
 
 
@@ -235,13 +242,10 @@ function getItemBlock($item, $that, $core_fields = '')
 	ob_start();
 ?>
 	<div class="<?php echo $prefix;?>item-block row-fluid<?php echo $class;?>">
-		<!-- Title position 1-->
-		<?php if($that->params->get('tmpl_params.title_position', 1) == 1):?>
-			<div class="<?php echo $prefix;?>title-position1 relative_ctrls has-context">
-				<?php getTitle($item, $that);?>
-			</div>
-		<?php endif;?>
-		<!-- End Title position 1-->
+
+		<div class="<?php echo $prefix;?>title-position1 relative_ctrls has-context">
+			<?php getTitle($item, $that);?>
+		</div>
 
 		<div class="pull-left <?php echo $prefix;?>position1">
 			<?php if(count($that->pos1)): ?>
@@ -254,39 +258,19 @@ function getItemBlock($item, $that, $core_fields = '')
 				</div>
 			<?php endif;?>
 		</div>
-		<div class="pull-left <?php echo $prefix;?>position2">
 
-			<!-- Title position 3-->
-			<?php if($that->params->get('tmpl_params.title_position', 1) == 3):?>
-				<div class="<?php echo $prefix;?>title-position3 relative_ctrls has-context">
-				<?php getTitle($item, $that);?>
-			</div>
-			<?php endif;?>
-			<!-- End Title position 3-->
-
-			<?php if(count($that->pos2)): ?>
-				<div class="text-overflow <?php echo $prefix;?>fields-pos2">
-					<?php foreach ($that->pos2 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(!isset($item->fields_by_key[$id])) continue;?>
-						<?php $field = $item->fields_by_key[$id];?>
-
-						<?php getField($field, $that, 2)?>
-
-					<?php endforeach;?>
-				</div>
-			<?php endif;?>
-		</div>
 		<div class="pull-left <?php echo $prefix;?>position3">
-			<?php if(count($that->pos3)): ?>
-				<div class="text-overflow <?php echo $prefix;?>fields-pos3">
-					<?php foreach ($that->pos3 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(!isset($item->fields_by_key[$id])) continue;?>
-						<?php $field = $item->fields_by_key[$id];?>
-						<?php getField($field, $that, 3)?>
-					<?php endforeach;?>
-				</div>
-			<?php endif;?>
+
 			<div class="book-fields">
+
+				<table class="table">
+					<?php if(isset($that->cart['rent'][$item->id])): ?>
+					<tr>
+						<td><?php echo JText::_('CRENT');?></td>
+						<td><?php var_dump($that->book_field->value)?></td>
+					</tr>
+					<?php endif;?>
+				</table>
 				<?php
 
 				if(!isset($that->cart['rent'][$item->id])){
@@ -338,30 +322,7 @@ function getItemBlock($item, $that, $core_fields = '')
 				</table>
 			</div>
 		</div>
-		<div class="clearfix"></div>
-		<div class="<?php echo $prefix;?>position4">
-			<?php if(count($that->pos4)): ?>
-				<div class="text-overflow <?php echo $prefix;?>fields-pos4">
-					<?php foreach ($that->pos4 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(!isset($item->fields_by_key[$id])) continue;?>
-						<?php $field = $item->fields_by_key[$id];?>
-						<?php getField($field, $that, 4)?>
-					<?php endforeach;?>
-				</div>
-			<?php endif;?>
 
-			<?php if($that->params->get('tmpl_params.show_core', 1)):?>
-				<?php getCoreFields($item, $that);?>
-			<?php endif;?>
-		</div>
-
-		<!-- Title position 2-->
-		<?php if($that->params->get('tmpl_params.title_position', 1) == 2):?>
-			<div class="<?php echo $prefix;?>title-position2 relative_ctrls has-context">
-				<?php getTitle($item, $that);?>
-			</div>
-		<?php endif;?>
-		<!-- End Title position 2-->
 	</div>
 <?php
 	return ob_get_clean();
@@ -391,7 +352,7 @@ function getField($field, $that, $position = 1)
 function getTitle($item, $that){
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 ?>
-	<?php if($that->user->get('id')):?>
+	<?php /*if($that->user->get('id')):?>
 		<div class="user-ctrls">
 			<div class="btn-group" style="display: none;">
 				<?php echo HTMLFormatHelper::bookmark($item, $that->submission_types[$item->type_id], $that->params);?>
@@ -408,15 +369,15 @@ function getTitle($item, $that){
 				<?php endif;?>
 			</div>
 		</div>
-	<?php endif;?>
+	<?php endif;*/?>
 
-	<?php if($that->params->get('tmpl_core.item_title')):?>
+	<?php /*if($that->params->get('tmpl_core.item_title')):?>
 		<?php if($that->submission_types[$item->type_id]->params->get('properties.item_title')):?>
 			<div class="<?php echo $that->params->get('tmpl_params.title_align', 'pull-left')?>">
 				<<?php echo $that->params->get('tmpl_core.title_tag', 'h2');?> class="record-title">
 					<?php if( $that->params->get('tmpl_params.title_length', 0) && mb_strlen($item->title) > $that->params->get('tmpl_params.title_length')):?>
 						<?php $item->title = mb_substr($item->title, 0, $that->params->get('tmpl_params.title_length')).$that->params->get('tmpl_params.title_end')?>
-					<?php endif;?>
+					<?php endif;*/?>
 					<span class="<?php echo $prefix;?>title-text">
 					<?php if(in_array($that->params->get('tmpl_core.item_link'), $that->user->getAuthorisedViewLevels())):?>
 						<a <?php echo $item->nofollow ? 'rel="nofollow"' : '';?> href="<?php echo JRoute::_($item->url);?>">
@@ -426,16 +387,16 @@ function getTitle($item, $that){
 						<?php echo $item->title?>
 					<?php endif;?>
 					</span>
-					<?php echo CEventsHelper::showNum('record', $item->id);?>
+					<?php /*echo CEventsHelper::showNum('record', $item->id);?>
 				</<?php echo $that->params->get('tmpl_core.title_tag', 'h2');?>>
 			</div>
 			<div class="clearfix"></div>
 		<?php endif;?>
-	<?php endif;?>
+	<?php endif;*/?>
 
 <?php
 }
-
+/*
 function getCoreFields($item, $that){
 
 ?>
@@ -597,7 +558,7 @@ function getCoreFields($item, $that){
 
 				<?php if($that->params->get('tmpl_core.item_author') == 1):?>
 					<td nowrap="nowrap"><?php echo CCommunityHelper::getName($item->user_id, $that->section);?>
-					<?php if($that->params->get('tmpl_core.item_author_filter') /* && $item->user_id */):?>
+					<?php if($that->params->get('tmpl_core.item_author_filter') ):?>
 						<?php echo FilterHelper::filterButton('filter_user', $item->user_id, NULL, JText::sprintf('CSHOWALLUSERREC', CCommunityHelper::getName($item->user_id, $that->section, array('nohtml' => 1))), $that->section);?>
 					<?php endif;?>
 					</td>
@@ -656,5 +617,5 @@ function getCoreFields($item, $that){
 	</table>
 <?php
 
-}
+}*/
 ?>
