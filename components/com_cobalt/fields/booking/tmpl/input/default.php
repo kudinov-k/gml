@@ -70,20 +70,12 @@ $class = ' class="' . implode(' ', $class) . '"';
 			<td>
 				<table class="table">
 				<?php
-				$times = explode("\n", $this->params->get('params.times_d', ''));
-				$rent_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : array();
-				foreach ($times as $key => $time):
-					$v = null;
-					if(isset($rent_price[$key]))
-					{
-						$v = $rent_price[$key];
-					}
+				$rent_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : 0;
 				?>
 					<tr>
-					<td><?php echo $time;?></td>
-					<td><input type="text" value="<?php echo $v;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][rent][price][<?php echo $key;?>]" /></td>
+					<td>день</td>
+					<td><input type="text" value="<?php echo $rent_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][rent][price]" /></td>
 					</tr>
-				<?php endforeach;?>
 				</table>
 			</td>
 			<td>
@@ -160,20 +152,12 @@ $class = ' class="' . implode(' ', $class) . '"';
 			<td>
 				<table>
 				<?php
-				$times = explode("\n", $this->params->get('params.times_h', ''));
-				$order_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : array();
-				foreach ($times as $key => $time):
-					$v = null;
-					if(isset($order_price[$key]))
-					{
-						$v = $order_price[$key];
-					}
+				$order_price = isset($this->value['order']) ? $this->value['order']['price'] : 0;
 				?>
 					<tr>
-					<td><?php echo $time;?></td>
-					<td><input type="text" value="<?php echo $v;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][order][price][<?php echo $key;?>]" /></td>
+					<td>час</td>
+					<td><input type="text" value="<?php echo $order_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][order][price]" /></td>
 					</tr>
-				<?php endforeach;?>
 				</table>
 			</td>
 

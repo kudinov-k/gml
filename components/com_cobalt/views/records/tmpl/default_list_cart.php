@@ -138,13 +138,13 @@ var day_diff = 1;
 
 				<?php
 					$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
-					var_dump($this->book_field->value);
-					if(!is_array($this->book_field->value))
-					{
-						settype($this->book_field->value, 'array');
-						$this->book_field->value['rent'] = isset($this->book_field->value[0]) ? $this->book_field->value[0] : 1 ;
-						$this->book_field->value['sale'] = 0;
-					}
+					$this->book_field->units = explode("\n", $this->book_field->params->get('params.unit'));
+// 					if(!is_array($this->book_field->value))
+// 					{
+// 						settype($this->book_field->value, 'array');
+// 						$this->book_field->value['rent'] = isset($this->book_field->value[0]) ? $this->book_field->value[0] : 1 ;
+// 						$this->book_field->value['sale'] = 0;
+// 					}
 				?>
 
 				<?php echo getItemBlock($item, $this); ?>
@@ -224,24 +224,11 @@ var day_diff = 1;
 <?php
 function getItemBlock($item, $that, $core_fields = '')
 {
-	$class = '';
 	$prefix = $that->params->get('tmpl_params.prefix', '');
-	if($item->featured)
-	{
-		$class = ' success';
-	}
-	elseif($item->expired)
-	{
-		$class = ' error';
-	}
-	elseif($item->future)
-	{
-		$class = ' warning';
-	}
 
 	ob_start();
 ?>
-	<div class="<?php echo $prefix;?>item-block row-fluid<?php echo $class;?>">
+	<div class="<?php echo $prefix;?>item-block row-fluid">
 
 		<div class="<?php echo $prefix;?>title-position1 relative_ctrls has-context">
 			<?php getTitle($item, $that);?>
@@ -267,7 +254,24 @@ function getItemBlock($item, $that, $core_fields = '')
 					<?php if(isset($that->cart['rent'][$item->id])): ?>
 					<tr>
 						<td><?php echo JText::_('CRENT');?></td>
-						<td><?php var_dump($that->book_field->value)?></td>
+						<td><?php echo $that->book_field->value['rent']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+						<td><input type="text" class="input-mini" name="amount['rent'][<?php echo $item->id ?>]" value="<?php echo $that->cart['rent'][$item->id]?>"/></td>
+						<td>
+							<?php
+								echo isset($that->book_field->units[$that->book_field->value['rent']['unit']]) ? $that->book_field->units[$that->book_field->value['rent']['unit']] : 'No unit';
+							?>
+						</td>
+						<td>
+							<input type="text" class="input-mini" name="days['rent'][<?php echo $item->id ?>]" 
+								value="<?php echo isset($that->cart['rent']['time'.$item->id]) ? $that->cart['rent']['time'.$item->id] : 1;?>"/>
+						</td>
+						<td>сут.</td>
+						<td>
+							<?php
+								echo $that->cart['rent'][$item->id] * $that->book_field->value['rent']['price'] * 1;
+							?>
+							<?php echo $that->book_field->params->get('params.cur_output')?>
+						</td>
 					</tr>
 					<?php endif;?>
 				</table>
