@@ -16,14 +16,17 @@ $doc->addScriptDeclaration("
 	Cobalt.updateCart = function(){
 		if($('#booking_cart').length)
 		{
+
 			$.ajax({
-				url: Cobalt.field_call_url,
+				url: Cobalt.field_call_url+'&return=".base64_encode(JFactory::getURI()->toString())."',
 				type: 'POST',
 				dataType: 'json',
 				data:{
 					field_id: ".$params->get('booking_id').",
 					func: 'getCart',
-					mod_params: '".$params->toString()."'
+					mod_params: '".$params->toString()."',
+ 					cartform: $('#orderForm').serialize()
+// 					days: $('input[name^=\'days\']')
 				}
 			}).done(function(json) {
 				$('#booking_cart').html(json.result);
@@ -108,10 +111,11 @@ $doc->addScriptDeclaration("
 })( jQuery );
 ");
 ?>
-<form method="post" id="orderForm" action="<?php echo JRoute::_('index.php?option=com_cobalt&task=ajax.field_call&field_id='.$params->get('booking_id').'&func=orderCart')?>">
+
 	<div id="booking_cart" class="stats-module<?php echo $moduleclass_sfx; ?>">
 
 	</div>
+<form method="post" id="orderForm" action="<?php echo JRoute::_('index.php?option=com_cobalt&task=ajax.field_call&field_id='.$params->get('booking_id').'&func=orderCart')?>">
 
 	<div id="dialog-form" title="Create new user" class="collapse">
 		 <p class="validateTips">All form fields are required.</p>
@@ -131,6 +135,11 @@ $doc->addScriptDeclaration("
 
 
  <script>
+function submitCart(url){
+	jQuery('#orderForm').attr('action', url);
+	jQuery('#orderForm').submit();
+}
+
 !(function($) {
 	var name = $( "#name" ),
 	email = $( "#email" ),

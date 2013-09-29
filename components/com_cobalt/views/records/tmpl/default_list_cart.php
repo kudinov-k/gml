@@ -11,11 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 $this->params = $this->tmpl_params['list'];
 JHtml::_('dropdown.init');
 $this->pos1 = $this->params->get('tmpl_params.field_id_position_1', array());
-$this->pos2 = $this->params->get('tmpl_params.field_id_position_2', array());
-$this->pos3 = $this->params->get('tmpl_params.field_id_position_3', array());
-$this->pos4 = $this->params->get('tmpl_params.field_id_position_4', array());
 
-$cols = $this->params->get('tmpl_params.columns', 3);
 $span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
 $prefix = $this->params->get('tmpl_params.prefix', '');
 
@@ -51,65 +47,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 }
 ?>
 
-<script type="text/javascript">
-var day_diff = 1;
-(function($) {
-	$.datepicker.setDefaults( $.datepicker.regional[ "ru" ] );
-
-	var today = new Date();
-
-	var first = $('#datein').datepicker({
-		minDate: 0,
-		firstDay: 1,
-		dateFormat: "D, MM d, yy",
-		autoSize: true,
-		onSelect:calcDays,
-	});
-	var second = $('#dateout').datepicker({
-		minDate: 1,
-		firstDay: 1,
-		dateFormat: "D, MM d, yy",
-		autoSize: true,
-		onSelect:calcDays,
-	});
-
-	function calcDays()
-	{
-		var date_first = $('#datein').datepicker('getDate');
-		var date_second = $('#dateout').datepicker('getDate');
-
-		day_diff = parseInt(date_second - date_first)/(1000*3600*24);
-
-		Cobalt.recalcAll();
-	}
-
-})( jQuery );
-</script>
-<style>
-	.user-info {
-		margin: 0;
-	}
-	.avatar {
-		text-align: center;
-		vertical-align: middle;
-	}
-	.table-records tbody tr td {
-		vertical-align: <?php echo $this->params->get('tmpl_core.valign') ?>;
-	}
-	.record-title {
-		margin: 0 0 5px 0;
-	}
-.relative_ctrls {
-	position: relative;
-}
-.user-ctrls {
-	position: absolute;
-	top:0px;
-	right: 0;
-}
-</style>
-
-<?php if($this->params->get('tmpl_params.show_cats', 1)):?>
+<?php //if($this->params->get('tmpl_params.show_cats', 1)):?>
 	<?php foreach ($sorted_cats AS $cat_id):?>
 
 		<?php
@@ -125,50 +63,41 @@ var day_diff = 1;
 			$showed_parents[] = $parent->id;
 		}
 		?>
+		<form method="post" action="index.php?option=com_cobalt&task=ajax.field_call&field_id=<?php echo $this->mod_params->get('booking_id');?>&func=updateCart&return=<?php echo $app->input->getBase64('return', '');?>">
+		<table class="table">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Операция</th>
+					<th>Цена</th>
+					<th>Ед.изм</th>
+					<th>Кол-во</th>
+					<th>Период</th>
+					<th>Сумма</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($sorted[$cat_id] AS $item):?>
+					<?php
+						$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
+						$this->book_field->units = explode("\n", $this->book_field->params->get('params.unit'));
+					?>
+					<?php echo getItemBlock($item, $this); ?>
 
-		<?php $k = 0;?>
-		<?php foreach ($sorted[$cat_id] AS $item):?>
-		<?php //$total += $this->cart[$item->id] * floatval(str_replace(',', '', $item->fields_by_key[$this->mod_params->get('price_id')]->value));?>
-
-			<?php if($k % $cols == 0):?>
-				<div class="row-fluid">
-			<?php endif;?>
-
-			<div class="span<?php echo $span[$cols]?> ">
-
-				<?php
-					$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
-					$this->book_field->units = explode("\n", $this->book_field->params->get('params.unit'));
-// 					if(!is_array($this->book_field->value))
-// 					{
-// 						settype($this->book_field->value, 'array');
-// 						$this->book_field->value['rent'] = isset($this->book_field->value[0]) ? $this->book_field->value[0] : 1 ;
-// 						$this->book_field->value['sale'] = 0;
-// 					}
-				?>
-
-				<?php echo getItemBlock($item, $this); ?>
-			</div>
-
-			<?php if($k % $cols == ($cols - 1)):?>
-				</div>
-			<?php endif; $k++;?>
-
-		<?php endforeach;?>
-
-		<?php if($k % $cols != 0):?>
-			</div>
-		<?php endif;?>
-
+				<?php endforeach;?>
+			</tbody>
+		</table>
+		<button type="submit" class="btn btn-small btn-success"><?php echo JText::_('RECALC');?></button>
+		</form>
 	<?php endforeach;?>
 
-<?php else:?>
+
+<?php /*else:?>
 
 	<?php $k = 0;?>
 	<?php foreach ($this->items AS $item):?>
 		<?php
 			$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
-			var_dump($this->book_field);
 			if(!is_array($this->book_field->value))
 			{
 				settype($this->book_field->value, 'array');
@@ -194,30 +123,10 @@ var day_diff = 1;
 
 	<?php if($k % $cols != 0):?>
 		</div>
-	<?php endif;?>
+	<?php endif;*/?>
 
-<?php endif;?>
+<?php //endif;?>
 
-<!--
-<div class="clearfix"></div>
-<hr />
-<div id="summary" class="pull-right">
-	<?php echo JText::_('SUMMARY');?>
-	<span id="cart_summary"><input type="text" id="total_summary" readonly="readonly" name="total_summary" value="<?php echo $total;?>" class="input-mini" /></span> руб.
-</div>
-
-<div class="clearfix"></div>
-<hr />
-<div class="pull-right">
-	<div class="pull-right">
-		<?php echo JText::_('DATEOUT');?>
-		<input type="text" name="dateout" id="dateout" />
-	</div>
-	<div class="pull-right">
-		<?php echo JText::_('DATEIN');?>
-		<input type="text" name="datein" id="datein" />
-	</div>
-</div>-->
 <div class="clearfix"></div>
 
 
@@ -227,107 +136,87 @@ function getItemBlock($item, $that, $core_fields = '')
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 
 	ob_start();
+	$rowspan = 0;
+	if(isset($that->cart['rent'][$item->id]))
+		$rowspan += 1;
+	if(isset($that->cart['sale'][$item->id]))
+		$rowspan += 1;
+	if(isset($that->cart['order'][$item->id]))
+		$rowspan += 1;
+
 ?>
-	<div class="<?php echo $prefix;?>item-block row-fluid">
 
-		<div class="<?php echo $prefix;?>title-position1 relative_ctrls has-context">
-			<?php getTitle($item, $that);?>
-		</div>
+		<?php if(isset($that->cart['rent'][$item->id])): ?>
+		<tr class="<?php echo $prefix;?>item-block">
+			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
+			<td><?php echo JText::_('CRENT');?></td>
+			<td><?php echo $that->book_field->value['rent']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>сут.</td>
+			<td><input type="text" class="input-mini" name="amount[rent][<?php echo $item->id ?>]" value="<?php echo $that->cart['rent'][$item->id]?>"/>
 
-		<div class="pull-left <?php echo $prefix;?>position1">
-			<?php if(count($that->pos1)): ?>
-				<div class="text-overflow <?php echo $prefix;?>fields-pos1">
-					<?php foreach ($that->pos1 AS $id): $id = $that->fields_keys_by_id[$id];?>
-						<?php if(!isset($item->fields_by_key[$id])) continue;?>
-						<?php $field = $item->fields_by_key[$id];?>
-						<?php getField($field, $that, 1)?>
-					<?php endforeach;?>
-				</div>
-			<?php endif;?>
-		</div>
-
-		<div class="pull-left <?php echo $prefix;?>position3">
-
-			<div class="book-fields">
-
-				<table class="table">
-					<?php if(isset($that->cart['rent'][$item->id])): ?>
-					<tr>
-						<td><?php echo JText::_('CRENT');?></td>
-						<td><?php echo $that->book_field->value['rent']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
-						<td><input type="text" class="input-mini" name="amount['rent'][<?php echo $item->id ?>]" value="<?php echo $that->cart['rent'][$item->id]?>"/></td>
-						<td>
-							<?php
-								echo isset($that->book_field->units[$that->book_field->value['rent']['unit']]) ? $that->book_field->units[$that->book_field->value['rent']['unit']] : 'No unit';
-							?>
-						</td>
-						<td>
-							<input type="text" class="input-mini" name="days['rent'][<?php echo $item->id ?>]" 
-								value="<?php echo isset($that->cart['rent']['time'.$item->id]) ? $that->cart['rent']['time'.$item->id] : 1;?>"/>
-						</td>
-						<td>сут.</td>
-						<td>
-							<?php
-								echo $that->cart['rent'][$item->id] * $that->book_field->value['rent']['price'] * 1;
-							?>
-							<?php echo $that->book_field->params->get('params.cur_output')?>
-						</td>
-					</tr>
-					<?php endif;?>
-				</table>
 				<?php
-
-				if(!isset($that->cart['rent'][$item->id])){
-					$that->cart['rent'][$item->id] = 0;
-				}
-				if(!isset($that->cart['sale'][$item->id])){
-					$that->cart['sale'][$item->id] = 0;
-				}
-
+					echo isset($that->book_field->units[$that->book_field->value['rent']['unit']]) ? $that->book_field->units[$that->book_field->value['rent']['unit']] : 'No unit';
 				?>
-				<table class="table">
-					<thead>
-						<tr>
-							<th><?php echo JText::_('Amount');?></th>
-							<th><?php echo JText::_('Sum');?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-								<?php echo JText::_('CRENT');?>
-							</td>
-							<td>
-								<input type="text" id="amount_rent<?php echo $item->id;?>"  name="amount_rent<?php echo $item->id;?>" value="<?php echo $that->cart['rent'][$item->id];?>" onchange="Cobalt.recalc('_rent'+<?php echo $item->id;?>, '<?php echo $that->book_field->value['rent'];?>');" class="input-mini"/>
-							</td>
-							<td>
-								<span id="sum_rent<?php echo $item->id;?>" rel="rent" class="input-mini">
-								<?php echo $that->cart['rent'][$item->id] * floatval(str_replace(',', '', $that->book_field->value['rent']));?>
-								</span>
-							</td>
-							<td rowspan="2" style="vertical-align: middle;">
-								<a href="javascript:void(0);" onclick="Cobalt.removeFromCart(<?php echo $item->id;?>);"><span class="label label-important">X</span></a>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php echo JText::_('CSALE');?>
-							</td>
-							<td>
-								<input type="text" id="amount_sale<?php echo $item->id;?>"  name="amount_sale<?php echo $item->id;?>" value="<?php echo $that->cart['sale'][$item->id];?>" onchange="Cobalt.recalc('_sale'+<?php echo $item->id;?>, '<?php echo $that->book_field->value['sale'];?>');" class="input-mini"/>
-							</td>
-							<td>
-								<span id="sum_sale<?php echo $item->id;?>" rel="sale" class="input-mini">
-								<?php echo $that->cart['sale'][$item->id] * floatval(str_replace(',', '', $that->book_field->value['sale']));?>
-								</span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
+			</td>
+			<td>
+				<input type="text" class="input-mini" name="days[rent][<?php echo $item->id ?>]"
+					value="<?php echo isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1;?>"/>
+			сут.</td>
+			<td>
+				<?php
+					echo $that->cart['rent'][$item->id] * $that->book_field->value['rent']['price'] * (isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1);
+				?>
+				<?php echo $that->book_field->params->get('params.cur_output')?>
+			</td>
+		</tr>
+		<?php endif;?>
 
-	</div>
+
+		<?php if(isset($that->cart['sale'][$item->id])): ?>
+		<tr class="<?php echo $prefix;?>item-block">
+			<td><?php echo JText::_('CSALE');?></td>
+			<td><?php echo $that->book_field->value['sale']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>&nbsp;</td>
+			<td><input type="text" class="input-mini" name="amount[sale][<?php echo $item->id ?>]" value="<?php echo $that->cart['sale'][$item->id]?>"/>
+
+				<?php
+					echo isset($that->book_field->units[$that->book_field->value['sale']['unit']]) ? $that->book_field->units[$that->book_field->value['sale']['unit']] : 'No unit';
+				?>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<?php
+					echo $that->cart['sale'][$item->id] * $that->book_field->value['sale']['price'] * 1;
+				?>
+				<?php echo $that->book_field->params->get('params.cur_output')?>
+			</td>
+		</tr>
+		<?php endif;?>
+
+		<?php if(isset($that->cart['order'][$item->id])): ?>
+		<tr class="<?php echo $prefix;?>item-block">
+			<td><?php echo JText::_('CORDER');?></td>
+			<td><?php echo $that->book_field->value['order']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>час.</td>
+			<td><input type="text" class="input-mini" name="amount[order][<?php echo $item->id ?>]" value="<?php echo $that->cart['order'][$item->id]?>"/>
+
+				<?php
+					echo isset($that->book_field->units[$that->book_field->value['order']['unit']]) ? $that->book_field->units[$that->book_field->value['order']['unit']] : 'No unit';
+				?>
+			</td>
+			<td>
+				<input type="text" class="input-mini" name="days[order][<?php echo $item->id ?>]"
+					value="<?php echo isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1;?>"/>
+			сут.</td>
+			<td>
+				<?php
+					echo $that->cart['order'][$item->id] * $that->book_field->value['order']['price'] * (isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1);
+				?>
+				<?php echo $that->book_field->params->get('params.cur_output')?>
+			</td>
+		</tr>
+		<?php endif;?>
+
 <?php
 	return ob_get_clean();
 }
@@ -400,226 +289,4 @@ function getTitle($item, $that){
 
 <?php
 }
-/*
-function getCoreFields($item, $that){
-
-?>
-	<table class="table-records <?php echo implode(' ', (array)$that->params->get('tmpl_core.table_style')); ?>">
-	<?php if($that->params->get('tmpl_params.table_header', 1)):?>
-		<thead>
-			<tr>
-				<?php if($that->params->get('tmpl_core.item_rating') == 1):?>
-					<th>
-						<?php if($that->params->get('tmpl_params.item_icon_rating')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/tick.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_('CRATING');?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_author_avatar') == 1):?>
-					<th>
-						<?php echo JText::_('CAVATAR');?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_author') == 1):?>
-					<th nowrap="nowrap">
-						<?php if($that->params->get('tmpl_params.item_icon_author')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/user.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_('CAUTHOR');?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_type') == 1):?>
-					<th>
-						<?php if($that->params->get('tmpl_params.item_icon_type')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/block.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_('CTYPE')?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_user_categories') == 1 && $that->section->params->get('personalize.pcat_submit')):?>
-					<th nowrap="nowrap">
-						<?php if($that->params->get('tmpl_params.item_icon_user_categories')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/category.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_('CCATEGORY');?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_categories') == 1 && $that->section->categories):?>
-					<th nowrap="nowrap">
-						<?php if($that->params->get('tmpl_params.item_icon_categories')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/category.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_($that->params->get('tmpl_core.lbl_category', 'CCATEGORY'));?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_ctime') == 1):?>
-					<th nowrap="nowrap">
-						<?php if($that->params->get('tmpl_params.item_icon_ctime')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/calendar-day.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_('CCREATED');?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_mtime') == 1):?>
-					<th nowrap="nowrap">
-						<?php if($that->params->get('tmpl_params.item_icon_mtime')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/calendar-day.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_('CCHANGED');?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_extime') == 1):?>
-					<th nowrap="nowrap">
-						<?php if($that->params->get('tmpl_params.item_icon_extime')):?>
-							<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/calendar-day.png" align="absmiddle" />
-						<?php endif;?>
-						<?php echo JText::_('CEXPIRE');?>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_comments_num') == 1):?>
-					<th nowrap="nowrap">
-						<span rel="tooltip" data-original-title="<?php echo JText::_('CCOMMENTS');?>">
-							<?php if($that->params->get('tmpl_params.item_icon_comments_num')):?>
-								<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/balloon-left.png" align="absmiddle" />
-							<?php else:?>
-								<?php echo JString::substr(JText::_('CCOMMENTS'), 0, 1)?>
-							<?php endif;?>
-						</span>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_vote_num') == 1):?>
-					<th nowrap="nowrap">
-						<span rel="tooltip" data-original-title="<?php echo JText::_('CVOTES');?>">
-							<?php if($that->params->get('tmpl_params.item_icon_vote_num')):?>
-								<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/star.png" align="absmiddle" />
-							<?php else:?>
-								<?php echo JString::substr(JText::_('CVOTES'), 0, 1)?>
-							<?php endif;?>
-						</span>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_favorite_num') == 1):?>
-					<th nowrap="nowrap">
-						<span rel="tooltip" data-original-title="<?php echo JText::_('CFAVORITE');?>">
-							<?php if($that->params->get('tmpl_params.item_icon_favorite_num')):?>
-								<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/bookmark.png" align="absmiddle" />
-							<?php else:?>
-								<?php echo JString::substr(JText::_('CFAVORITE'), 0, 1)?>
-							<?php endif;?>
-						</span>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_follow_num') == 1):?>
-					<th nowrap="nowrap">
-						<span rel="tooltip" data-original-title="<?php echo JText::_('CFOLLOWERS');?>">
-							<?php if($that->params->get('tmpl_params.item_icon_follow_num')):?>
-								<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/follow1.png" align="absmiddle" />
-							<?php else:?>
-								<?php echo JString::substr(JText::_('CFOLLOWERS'), 0, 1)?>
-							<?php endif;?>
-						</span>
-					</th>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_hits') == 1):?>
-					<th nowrap="nowrap" width="1%">
-						<span rel="tooltip" data-original-title="<?php echo JText::_('CHITS');?>">
-							<?php if($that->params->get('tmpl_params.item_icon_hits')):?>
-								<img src="<?php echo JURI::root(TRUE);?>/media/mint/icons/16/hand-point-090.png" align="absmiddle" />
-							<?php else:?>
-								<?php echo JString::substr(JText::_('CHITS'), 0, 1)?>
-							<?php endif;?>
-						</span>
-					</th>
-				<?php endif;?>
-			</tr>
-		</thead>
-	<?php endif;?>
-		<tbody>
-			<tr>
-				<?php if($that->params->get('tmpl_core.item_rating') == 1):?>
-					<td nowrap="nowrap"><?php echo $item->rating;?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_author_avatar') == 1):?>
-					<td>
-						<img src="<?php echo CCommunityHelper::getAvatar($item->user_id, $that->params->get('tmpl_core.item_author_avatar_width', 40), $that->params->get('tmpl_core.item_author_avatar_height', 40));?>" />
-					</td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_author') == 1):?>
-					<td nowrap="nowrap"><?php echo CCommunityHelper::getName($item->user_id, $that->section);?>
-					<?php if($that->params->get('tmpl_core.item_author_filter') ):?>
-						<?php echo FilterHelper::filterButton('filter_user', $item->user_id, NULL, JText::sprintf('CSHOWALLUSERREC', CCommunityHelper::getName($item->user_id, $that->section, array('nohtml' => 1))), $that->section);?>
-					<?php endif;?>
-					</td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_type') == 1):?>
-					<td nowrap="nowrap"><?php echo $item->type_name;?>
-					<?php if($that->params->get('tmpl_core.item_type_filter')):?>
-						<?php echo FilterHelper::filterButton('filter_type', $item->type_id, NULL, JText::sprintf('CSHOWALLTYPEREC', $item->type_name), $that->section);?>
-					<?php endif;?>
-					</td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_user_categories') == 1 && $that->section->params->get('personalize.pcat_submit')):?>
-					<td><?php echo $item->ucatname;?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_categories') == 1 && $that->section->categories):?>
-					<td><?php echo implode(', ', $item->categories_links);?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_ctime') == 1):?>
-					<td><?php echo JHtml::_('date', $item->created, $that->params->get('tmpl_core.item_time_format'));?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_mtime') == 1):?>
-					<td><?php echo JHtml::_('date', $item->modify, $that->params->get('tmpl_core.item_time_format'));?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_extime') == 1):?>
-					<td><?php echo ( $item->expire ? JHtml::_('date', $item->expire, $that->params->get('tmpl_core.item_time_format')) : JText::_('CNEVER'));?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_comments_num') == 1):?>
-					<td><?php echo CommentHelper::numComments($that->submission_types[$item->type_id], $item);?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_vote_num') == 1):?>
-					<td><?php echo $item->votes;?></td>
-				<?php endif;?>
-
-
-				<?php if($that->params->get('tmpl_core.item_favorite_num') == 1):?>
-					<td><?php echo $item->favorite_num;?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_follow_num') == 1):?>
-					<td><?php echo $item->subscriptions_num;?></td>
-				<?php endif;?>
-
-				<?php if($that->params->get('tmpl_core.item_hits') == 1):?>
-					<td><?php echo $item->hits;?></td>
-				<?php endif;?>
-			</tr>
-		</tbody>
-	</table>
-<?php
-
-}*/
 ?>

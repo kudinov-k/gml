@@ -73,6 +73,36 @@ class JFormFieldCBooking extends CFormField
 		return $db->loadColumn();
 	}
 
+	public function updateCart()
+	{
+		$app = JFactory::getApplication();
+		$cart = $app->getUserState('booking_cart', array());
+		$amount = $app->input->get('amount', array(), 'array');
+
+		foreach ($amount as $type => $array)
+		{
+			foreach ($array as $id => $am) {
+				$cart[$type][$id] = $am;
+			}
+		}
+
+		$days = $app->input->get('days', array(), 'array');
+
+		foreach ($days as $type => $array)
+		{
+			foreach ($array as $id => $am) {
+				$cart['time_'.$type][$id] = $am;
+			}
+		}
+
+		$app->setUserState('booking_cart', $cart);
+
+		//var_dump($amount);exit();
+
+		$app->redirect(base64_decode($app->input->getString('return')));
+
+	}
+
 	public function addToCart($post)
 	{
 		$app = JFactory::getApplication();
@@ -107,6 +137,7 @@ class JFormFieldCBooking extends CFormField
 		$rows	= array();
 		$r_ids	= array();
 		$total_fields = array();
+		//$this->updateCart();
 
 		$params = new JRegistry($app->input->getString('mod_params', ''));
 
