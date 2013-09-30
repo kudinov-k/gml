@@ -48,6 +48,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 ?>
 
 <?php //if($this->params->get('tmpl_params.show_cats', 1)):?>
+	<form method="post" action="index.php?option=com_cobalt&task=ajax.field_call&field_id=<?php echo $this->mod_params->get('booking_id');?>&func=updateCart&return=<?php echo $app->input->getBase64('return', '');?>">
 	<?php foreach ($sorted_cats AS $cat_id):?>
 
 		<?php
@@ -63,11 +64,10 @@ if($this->params->get('tmpl_params.show_cats', 1))
 			$showed_parents[] = $parent->id;
 		}
 		?>
-		<form method="post" action="index.php?option=com_cobalt&task=ajax.field_call&field_id=<?php echo $this->mod_params->get('booking_id');?>&func=updateCart&return=<?php echo $app->input->getBase64('return', '');?>">
 		<table class="table">
 			<thead>
 				<tr>
-					<th></th>
+					<th width="15%"></th>
 					<th>Операция</th>
 					<th>Цена</th>
 					<th>Ед.изм</th>
@@ -87,9 +87,9 @@ if($this->params->get('tmpl_params.show_cats', 1))
 				<?php endforeach;?>
 			</tbody>
 		</table>
-		<button type="submit" class="btn btn-small btn-success"><?php echo JText::_('RECALC');?></button>
-		</form>
 	<?php endforeach;?>
+	<button type="submit" class="btn btn-small btn-success"><?php echo JText::_('RECALC');?></button>
+	</form>
 
 
 <?php /*else:?>
