@@ -49,6 +49,8 @@ if($this->params->get('tmpl_params.show_cats', 1))
 
 <?php //if($this->params->get('tmpl_params.show_cats', 1)):?>
 	<form method="post" action="index.php?option=com_cobalt&task=ajax.field_call&field_id=<?php echo $this->mod_params->get('booking_id');?>&func=updateCart&return=<?php echo $app->input->getBase64('return', '');?>">
+	<?php $this->total = 0;?>
+	<?php $this->tax_total = array();?>
 	<?php foreach ($sorted_cats AS $cat_id):?>
 
 		<?php
@@ -77,6 +79,8 @@ if($this->params->get('tmpl_params.show_cats', 1))
 				</tr>
 			</thead>
 			<tbody>
+				<?php $this->total_cat = 0;?>
+				<?php $this->tax_cat = 0;?>
 				<?php foreach ($sorted[$cat_id] AS $item):?>
 					<?php
 						$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
@@ -85,6 +89,20 @@ if($this->params->get('tmpl_params.show_cats', 1))
 					<?php echo getItemBlock($item, $this); ?>
 
 				<?php endforeach;?>
+				<tr>
+					<td colspan="5"></td>
+					<td>Всего по разделу</td>
+					<td><?php echo $this->total_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+				</tr>
+
+				<?php echo getTax($this->total_cat, $this->book_field, $this);?>
+
+				<tr>
+					<td colspan="5"></td>
+					<td>Итого по разделу</td>
+					<td><?php echo $this->total_cat + $this->tax_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+				</tr>
+
 			</tbody>
 		</table>
 	<?php endforeach;?>
@@ -131,6 +149,42 @@ if($this->params->get('tmpl_params.show_cats', 1))
 
 
 <?php
+
+function getTax($price, $field, $that)
+{
+	$tax = $field->params->get('params.tax');
+	$tax = explode("\n", $tax);
+
+	$formulas = $field->params->get('params.formula');
+	$formulas = explode("\n", $formulas);
+	if (empty($formulas) || empty($tax))
+	{
+		return;
+	}
+
+	ob_start();
+	?>
+	<?php foreach ($formulas as $key => $formula):?>
+	<?php if (!isset($tax[$key])) continue;?>
+	<tr>
+		<td colspan="5"></td>
+		<td><?php echo $tax[$key];?></td>
+		<td>
+			<?php eval('$_tax = '.str_replace('[PRICE]', $price, $formula).';')?>
+			<?php
+				if(!isset($that->tax_total[$key])) $that->tax_total[$key] = 0;
+				$that->tax_total[$key] += $_tax;
+				$that->tax_cat += $_tax;
+			?>
+			<?php echo $_tax;?> <?php echo $that->book_field->params->get('params.cur_output');?>
+		</td>
+	</tr>
+	<?php endforeach;?>
+	<?php
+	return ob_get_clean();
+}
+
+
 function getItemBlock($item, $that, $core_fields = '')
 {
 	$prefix = $that->params->get('tmpl_params.prefix', '');
@@ -164,7 +218,10 @@ function getItemBlock($item, $that, $core_fields = '')
 			сут.</td>
 			<td>
 				<?php
-					echo $that->cart['rent'][$item->id] * $that->book_field->value['rent']['price'] * (isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1);
+					$a = $that->cart['rent'][$item->id] * $that->book_field->value['rent']['price'] * (isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1);
+					$that->total_cat += $a;
+					$that->total += $a;
+					echo $a;
 				?>
 				<?php echo $that->book_field->params->get('params.cur_output')?>
 			</td>
@@ -186,7 +243,10 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td>&nbsp;</td>
 			<td>
 				<?php
-					echo $that->cart['sale'][$item->id] * $that->book_field->value['sale']['price'] * 1;
+					$a = $that->cart['sale'][$item->id] * $that->book_field->value['sale']['price'] * 1;
+					$that->total_cat += $a;
+					$that->total += $a;
+					echo $a;
 				?>
 				<?php echo $that->book_field->params->get('params.cur_output')?>
 			</td>
@@ -210,7 +270,10 @@ function getItemBlock($item, $that, $core_fields = '')
 			сут.</td>
 			<td>
 				<?php
-					echo $that->cart['order'][$item->id] * $that->book_field->value['order']['price'] * (isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1);
+					$a = $that->cart['order'][$item->id] * $that->book_field->value['order']['price'] * (isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1);
+					$that->total_cat += $a;
+					$that->total += $a;
+					echo $a;
 				?>
 				<?php echo $that->book_field->params->get('params.cur_output')?>
 			</td>
