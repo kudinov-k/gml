@@ -47,12 +47,20 @@ if($this->params->get('tmpl_params.show_cats', 1))
 }
 ?>
 
+<style>
+.cart_cat{
+	border:1px solid #ccc;
+	border-radius: 5px;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+</style>
+
 <?php //if($this->params->get('tmpl_params.show_cats', 1)):?>
 	<form method="post" action="index.php?option=com_cobalt&task=ajax.field_call&field_id=<?php echo $this->mod_params->get('booking_id');?>&func=updateCart&return=<?php echo $app->input->getBase64('return', '');?>">
 	<?php $this->total = 0;?>
-	<?php $this->tax_total = array();?>
 	<?php foreach ($sorted_cats AS $cat_id):?>
-
+	<div class="cart_cat">
 		<?php
 		$parents = $cats_model->getParentsObjectsByChild($cat_id);
 		$f_cat = 0;
@@ -90,22 +98,45 @@ if($this->params->get('tmpl_params.show_cats', 1))
 
 				<?php endforeach;?>
 				<tr>
-					<td colspan="5"></td>
-					<td>Всего по разделу</td>
-					<td><?php echo $this->total_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
-				</tr>
+					<td colspan="7">
+						<table class="pull-right">
+							<tr>
+								<td>Всего по разделу</td>
+								<td><?php echo $this->total_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+							</tr>
 
-				<?php echo getTax($this->total_cat, $this->book_field, $this);?>
+							<?php echo getTax($this->total_cat, $this->book_field, $this);?>
 
-				<tr>
-					<td colspan="5"></td>
-					<td>Итого по разделу</td>
-					<td><?php echo $this->total_cat + $this->tax_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+							<tr>
+								<td>Итого по разделу</td>
+								<td><?php echo $this->total_cat + $this->tax_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 
 			</tbody>
 		</table>
+	</div>
 	<?php endforeach;?>
+	<div class="pull-right">
+		<table class="table">
+			<tr>
+				<td>Всего</td>
+				<td><?php echo $this->total?></td>
+			</tr>
+
+			<?php $this->tax_cat = 0;?>
+			<?php echo getTax($this->total, $this->book_field, $this);?>
+
+			<tr>
+				<td>Итого</td>
+				<td><?php echo $this->total + $this->tax_cat ?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+			</tr>
+
+		</table>
+	</div>
+	<div class="clearfix"></div>
 	<button type="submit" class="btn btn-small btn-success"><?php echo JText::_('RECALC');?></button>
 	</form>
 
@@ -167,13 +198,10 @@ function getTax($price, $field, $that)
 	<?php foreach ($formulas as $key => $formula):?>
 	<?php if (!isset($tax[$key])) continue;?>
 	<tr>
-		<td colspan="5"></td>
 		<td><?php echo $tax[$key];?></td>
 		<td>
 			<?php eval('$_tax = '.str_replace('[PRICE]', $price, $formula).';')?>
 			<?php
-				if(!isset($that->tax_total[$key])) $that->tax_total[$key] = 0;
-				$that->tax_total[$key] += $_tax;
 				$that->tax_cat += $_tax;
 			?>
 			<?php echo $_tax;?> <?php echo $that->book_field->params->get('params.cur_output');?>
