@@ -134,21 +134,19 @@ class JFormFieldCBooking extends CFormField
 	public function getCart()
 	{
 		$app	= JFactory::getApplication();
-		$rows	= array();
-		$r_ids	= array();
-		$total_fields = array();
 		//$this->updateCart();
+
 
 		$params = new JRegistry($app->input->getString('mod_params', ''));
 
 		$cart = $app->getUserState('booking_cart', array());
 
-		if(empty($cart) || (empty($cart['rent']) || empty($cart['sale']) || empty($cart['order'])))
+		if(empty($cart))
 			AjaxHelper::send('');
 
-		$c_rent = array_keys($cart['rent']);
-		$c_sale = array_keys($cart['sale']);
-		$c_order = array_keys($cart['order']);
+		$c_rent = !empty($cart['rent']) ? array_keys($cart['rent']) : array();
+		$c_sale = !empty($cart['sale']) ? array_keys($cart['sale']) : array();
+		$c_order = !empty($cart['order']) ? array_keys($cart['order']) : array();
 		$cart = array_merge($c_rent, $c_sale, $c_order);
 
 		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
@@ -175,6 +173,39 @@ class JFormFieldCBooking extends CFormField
 	public function orderCart()
 	{
 		$app  = JFactory::getApplication();
+
+
+		$params = new JRegistry($app->input->getString('mod_params', ''));
+
+		$cart = $app->getUserState('booking_cart', array());
+
+		if(empty($cart) || (empty($cart['rent']) || empty($cart['sale']) || empty($cart['order'])))
+			AjaxHelper::send('');
+
+		$c_rent = array_keys($cart['rent']);
+		$c_sale = array_keys($cart['sale']);
+		$c_order = array_keys($cart['order']);
+		$cart = array_merge($c_rent, $c_sale, $c_order);
+
+		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
+		$api = new CobaltApi();
+		$result = $api->records(
+				$params->get('section_id'),
+				'all',
+				$params->get('orderby'),
+				0,
+				null,
+				null,
+				500,
+				'cart_mail',
+				false,
+				false,
+				0,
+				$cart);
+
+		$content = $result['html'];
+
+
 		$cart = $app->getUserState('booking_cart', array());
 		$body = '';
 
@@ -188,91 +219,9 @@ class JFormFieldCBooking extends CFormField
 		$mailer->AddAddress($this->params->get('params.email'));
 		$mailer->AddAddress($app->input->post->getString('email'));
 
-		$model = JModelLegacy::getInstance('Record', 'CobaltModel');
-
-		$body .= '<h2>Заказ</h2>';
-		$body .= '<table>';
-		$body .= '<tr>';
-		$body .= '<th>Название</th>';
-		$body .= '<th>Количество</th>';
-		$body .= '<th>Цена</th>';
-		$body .= '<th>Сумма</th>';
-		$body .= '</tr>';
-
-
-		foreach ($cart as $row)
-		{
-			//if(in_array($row['record_id'], $r_ids)) continue;
-
-			$record = ItemsStore::getRecord($row);
-			$prep_record = $model->_prepareItem($record, 'list');
-			$fields = json_decode($record->fields, true);
-			$price = $prep_record->fields_by_key[$mod_params->get('price_id')]->value;
-			$body .= '<tr>';
-			$body .= '<th>'.$record->title.'</th>';
-			$body .= '<th>'.$app->input->post->getString('amount'.$record->id).'</th>';
-			$body .= '<th>'.$price.'</th>';
-			$body .= '<th>'.$price * $app->input->post->getString('amount'.$record->id).'</th>';
-			$body .= '</tr>';
-
-		}
-
-		$body .= '</table>';
-
-		$body .= '<table>
-				<tr>
-					<td>Date In</td><td>'.$app->input->post->getString('datein').'</td>
-				</tr>
-				<tr>
-					<td>Date Out</td><td>'.$app->input->post->getString('dateout').'</td>
-				</tr>
-				<tr>
-					<td>Общая сумма</td><td>'.$app->input->post->getString('total_summary').'</td>
-				</tr>
-				<tr>
-					<td>Name</td><td>'.$app->input->post->getString('name').'</td>
-				</tr>
-				<tr>
-					<td>Email</td><td>'.$app->input->post->getString('email').'</td>
-				</tr>
-				<tr>
-					<td>Telephone</td><td>'.$app->input->post->getString('telephone').'</td>
-				</tr>
-				</table>';
-
-
-		$mailer->setBody($body);
+		$mailer->setBody($content);
 		$mailer->Send();
 
-
-		/*$order = JTable::getInstance('Booking_order', 'CobaltTable');
-		//$order->bind();
-		$order->check();
-		if($order->store())
-		{
-			$booking = JTable::getInstance('Booking', 'CobaltTable');
-
-			foreach ($cart as $row)
-			{
-				$dates = explode(',', $row['dates']);
-				foreach ($dates as $date)
-				{
-					$data['date'] = $date;
-					$data['order_id'] = $order->id;
-					$data['record_id'] = $row['record_id'];
-					$data['field_id'] = $this->id;
-
-					$booking->bind($data);
-					$booking->check();
-					$booking->store();
-					$booking->reset();
-					$booking->id = null;
-				}
-			}
-			$app->setUserState('booking_cart', array());
-
-
-		}*/
 		$app->setUserState('booking_cart', array());
 		$app->redirect(base64_decode($app->input->post->getString('return')), 'Заказ успешно отправлен');
 

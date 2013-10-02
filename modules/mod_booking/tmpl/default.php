@@ -14,30 +14,21 @@ $doc->addScriptDeclaration("
 !(function($)
 {
 	Cobalt.updateCart = function(){
-		if($('#booking_cart').length)
-		{
+		$.ajax({
+			url: Cobalt.field_call_url+'&return=".base64_encode(JFactory::getURI()->toString())."',
+			type: 'POST',
+			dataType: 'json',
+			data:{
+				field_id: ".$params->get('booking_id').",
+				func: 'getCart',
+				mod_params: '".$params->toString()."',
+			}
+		}).done(function(json) {
+			$('#booking_cart').html(json.result);
 
-			$.ajax({
-				url: Cobalt.field_call_url+'&return=".base64_encode(JFactory::getURI()->toString())."',
-				type: 'POST',
-				dataType: 'json',
-				data:{
-					field_id: ".$params->get('booking_id').",
-					func: 'getCart',
-					mod_params: '".$params->toString()."',
- 					cartform: $('#orderForm').serialize()
-// 					days: $('input[name^=\'days\']')
-				}
-			}).done(function(json) {
-				$('#booking_cart').html(json.result);
-				$( '#order_cart' ).button().click(function() {
-					//$( '#dialog-form' ).dialog( 'open' );
-				});
-
-				$('#order_cart').removeClass();
-				$('#order_cart').addClass('btn btn-small btn-success');
-			});
-		}
+			$('#order_cart').removeClass();
+			$('#order_cart').addClass('btn btn-small btn-success');
+		});
 	};
 
 	Cobalt.removeFromCart = function(id){
@@ -135,11 +126,6 @@ $doc->addScriptDeclaration("
 
 
  <script>
-function submitCart(url){
-	jQuery('#orderForm').attr('action', url);
-	jQuery('#orderForm').submit();
-}
-
 !(function($) {
 	var name = $( "#name" ),
 	email = $( "#email" ),
