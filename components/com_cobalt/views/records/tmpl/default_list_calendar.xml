@@ -7,56 +7,54 @@
 	<license>Commercial (http://www.mintjoomla.com/commercial-license)</license>
 	<authorEmail>support@mintjoomla.com</authorEmail>
 	<authorUrl>www.mintjoomla.com</authorUrl>
-	<version>8.1</version>
-	<description><![CDATA[ Calendar view of the records.]]></description>
+	<version>8.26</version>
+	<description><![CDATA[ Calendar view ]]></description>
 
 	<fields name="tmpl_params">
-		<fieldset name="general4" label="CFORMAT">
-			<field name="first_day" type="list" default="1" label="First day of the week" description="">
-				<option value="1">Monday</option>
-				<option value="7">Sunday</option>
+		<fieldset name="general" label="Calendar options">
+			<field name="field_id_cal" key="id" type="meresourcesfields" size="1" multiple="false" label="Field with datetime" filters="'datetime'"/>
+			<field label="Default view" name="view" type="list" default="month">
+				<option value="year">Year</option>
+				<option value="month">Month</option>
+				<option value="week">Week</option>
+				<option value="day">Day</option>
 			</field>
-			<field name="time" type="list" default="1"  label="Enable time" description="When time is enabled layout show events with precision to time.">
+			<field name="cal_start" type="text" default="now" label="Start date (now or yyyy-mm-dd)" />
+			<field name="cal_nav" type="radio" class="btn-group" default="1" label="Enable navigation">
+				<option value="0">CNO</option>
+				<option value="1">CYES</option>
+			</field>
+			<field name="cal_view_year" type="radio" class="btn-group" default="1" label="Enable year view">
+				<option value="0">CNO</option>
+				<option value="1">CYES</option>
+			</field>
+			<field name="cal_view_month" type="radio" class="btn-group" default="1" label="Enable month view">
+				<option value="0">CNO</option>
+				<option value="1">CYES</option>
+			</field>
+			<field name="cal_view_week" type="radio" class="btn-group" default="1" label="Enable week view">
+				<option value="0">CNO</option>
+				<option value="1">CYES</option>
+			</field>
+			<field name="cal_view_day" type="radio" class="btn-group" default="1" label="Enable day view">
+				<option value="0">CNO</option>
+				<option value="1">CYES</option>
+			</field>
+			<field name="cal_weekday" type="radio" class="btn-group" default="1" label="Enable first day of week switcher">
 				<option value="0">CNO</option>
 				<option value="1">CYES</option>
 			</field>
 		</fieldset>
 	</fields>
 	<fields name="tmpl_core">
-		<fieldset name="general2" label="CFORMAT">
-			<field name="limit" type="text" size="3" default="10" label="Items per page" description="Please make it so that all articles during 6 month could be select on one page." />
-			<field name="view" type="list" default="1" label="Initial View" description="">
-				<option value="1">Day</option>
-				<option value="2">Week</option>
-				<option value="3">Month</option>
-				<option value="4">2 Months</option>
-				<option value="7">3 Months</option>
-				<option value="5">4 Months</option>
-				<option value="6">6 Months</option>
+		<fieldset name="general2" label="List under calendar">
+			<field label="Show list of records under the calendar" name="tmpl_list" type="mersubtmpls" default="" tmpltype="itemlist">
+				<option value="0">Do not show anything</option>
 			</field>
-			<field name="first_day" type="list" default="1" label="Week First Day" description="">
-				<option value="1">Monday</option>
-				<option value="0">Sunday</option>
-			</field>
-			<field name="limit" type="text" size="3" default="10" label="Max items per day" description="Show first 10 items in popup and give link to day view with all articles" />
-			<field name="hint_delay" type="text" size="4" default="1500" label="Hint Delay (ms)" description="" />
-
-			<field name="allow_view" type="list" default="" multiple="true" size="7" label="Allow view" description="">
-				<option value="day">Day</option>
-				<option value="week">Week</option>
-				<option value="month">Month</option>
-				<option value="month2">2 Months</option>
-				<option value="month3">3 Months</option>
-				<option value="month4">4 Months</option>
-				<option value="month6">6 Months</option>
-			</field>
-			<field name="show_items_by" type="radio" class="btn-group" default="ctime" size="3" label="Show records by field" description="">
-				<option value="ctime">Created</option>
-				<option value="datetime">Datetime</option>
-			</field>
-			<field name="datetime" type="meresourcesfields" filters="datetime" multiple="true" size="7" label="Datetime fields" />
-
-			<field name="item_pagination" type="hidden" default="0" label="Hide Limit Box" description="" />
+			<field name="list_title" type="text" default="Latest events" label="List title"/>
+			<field name="item_limit_default" type="text" size="3" default="20" label="X_DEFAULTPAGLIMIT"/>
+			<field name="item_pagination" type="hidden" default="0" label="Hide Limit Box" description=""/>
+			<field name="item_limit_box" type="hidden" default="0" label="Hide Limit Box" description=""/>
 		</fieldset>
 	</fields>
 </form>
