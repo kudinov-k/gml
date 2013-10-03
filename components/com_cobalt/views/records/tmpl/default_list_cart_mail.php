@@ -167,12 +167,14 @@ function getItemBlock($item, $that, $core_fields = '')
 		$rowspan += 1;
 	if(isset($that->cart['order'][$item->id]))
 		$rowspan += 1;
-
+	$title_show = false;
 ?>
 
 		<?php if(isset($that->cart['rent'][$item->id])): ?>
 		<tr class="item-block">
+			<?php if(!$title_show):?>
 			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
+			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CRENT');?></td>
 			<td><?php echo $that->book_field->value['rent']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>сут.</td>
@@ -198,6 +200,9 @@ function getItemBlock($item, $that, $core_fields = '')
 
 		<?php if(isset($that->cart['sale'][$item->id])): ?>
 		<tr class="item-block">
+			<?php if(!$title_show):?>
+			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
+			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CSALE');?></td>
 			<td><?php echo $that->book_field->value['sale']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>&nbsp;</td>
@@ -221,6 +226,9 @@ function getItemBlock($item, $that, $core_fields = '')
 
 		<?php if(isset($that->cart['order'][$item->id])): ?>
 		<tr class="item-block">
+			<?php if(!$title_show):?>
+			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
+			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CORDER');?></td>
 			<td><?php echo $that->book_field->value['order']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>час.</td>

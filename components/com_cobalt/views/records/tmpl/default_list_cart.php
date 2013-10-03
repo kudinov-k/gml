@@ -140,42 +140,6 @@ if($this->params->get('tmpl_params.show_cats', 1))
 	<button type="submit" class="btn btn-small btn-success"><?php echo JText::_('RECALC');?></button>
 	</form>
 
-
-<?php /*else:?>
-
-	<?php $k = 0;?>
-	<?php foreach ($this->items AS $item):?>
-		<?php
-			$this->book_field = $this->rmodel->getField($this->mod_params->get('booking_id'), $item->type_id, $item->id);
-			if(!is_array($this->book_field->value))
-			{
-				settype($this->book_field->value, 'array');
-				$this->book_field->value['rent'] = isset($this->book_field->value[0]) ? $this->book_field->value[0] : 1 ;
-				$this->book_field->value['sale'] = 0;
-			}
-		?>
-		<?php $total += @$this->cart['rent'][$item->id] * floatval(str_replace(',', '', $this->book_field->value['rent']));?>
-		<?php $total += @$this->cart['sale'][$item->id] * floatval(str_replace(',', '', $this->book_field->value['sale']));?>
-		<?php if($k % $cols == 0):?>
-			<div class="row-fluid">
-		<?php endif;?>
-
-		<div class="span<?php echo $span[$cols]?> ">
-			<?php echo getItemBlock($item, $this); ?>
-		</div>
-
-		<?php if($k % $cols == ($cols - 1)):?>
-			</div>
-		<?php endif; $k++;?>
-
-	<?php endforeach;?>
-
-	<?php if($k % $cols != 0):?>
-		</div>
-	<?php endif;*/?>
-
-<?php //endif;?>
-
 <div class="clearfix"></div>
 
 
@@ -225,12 +189,15 @@ function getItemBlock($item, $that, $core_fields = '')
 		$rowspan += 1;
 	if(isset($that->cart['order'][$item->id]))
 		$rowspan += 1;
+	$title_show = false;
 
 ?>
 
 		<?php if(isset($that->cart['rent'][$item->id])): ?>
 		<tr class="<?php echo $prefix;?>item-block">
+			<?php if(!$title_show):?>
 			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
+			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CRENT');?></td>
 			<td><?php echo $that->book_field->value['rent']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>сут.</td>
@@ -259,6 +226,9 @@ function getItemBlock($item, $that, $core_fields = '')
 
 		<?php if(isset($that->cart['sale'][$item->id])): ?>
 		<tr class="<?php echo $prefix;?>item-block">
+			<?php if(!$title_show):?>
+				<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
+			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CSALE');?></td>
 			<td><?php echo $that->book_field->value['sale']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>&nbsp;</td>
@@ -283,6 +253,9 @@ function getItemBlock($item, $that, $core_fields = '')
 
 		<?php if(isset($that->cart['order'][$item->id])): ?>
 		<tr class="<?php echo $prefix;?>item-block">
+			<?php if(!$title_show):?>
+				<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
+			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CORDER');?></td>
 			<td><?php echo $that->book_field->value['order']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>час.</td>
@@ -336,48 +309,15 @@ function getField($field, $that, $position = 1)
 function getTitle($item, $that){
 	$prefix = $that->params->get('tmpl_params.prefix', '');
 ?>
-	<?php /*if($that->user->get('id')):?>
-		<div class="user-ctrls">
-			<div class="btn-group" style="display: none;">
-				<?php echo HTMLFormatHelper::bookmark($item, $that->submission_types[$item->type_id], $that->params);?>
-				<?php echo HTMLFormatHelper::follow($item, $that->section);?>
-				<?php echo HTMLFormatHelper::repost($item, $that->section);?>
-				<?php echo HTMLFormatHelper::compare($item, $that->submission_types[$item->type_id], $that->section);?>
-				<?php if($item->controls):?>
-					<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-mini">
-						<img width="16" height="16" alt="<?php echo JText::_('COPTIONS')?>" src="<?php echo JURI::root(TRUE)?>/media/mint/icons/16/gear.png">
-					</a>
-					<ul class="dropdown-menu">
-						<?php echo list_controls($item->controls);?>
-					</ul>
-				<?php endif;?>
-			</div>
-		</div>
-	<?php endif;*/?>
-
-	<?php /*if($that->params->get('tmpl_core.item_title')):?>
-		<?php if($that->submission_types[$item->type_id]->params->get('properties.item_title')):?>
-			<div class="<?php echo $that->params->get('tmpl_params.title_align', 'pull-left')?>">
-				<<?php echo $that->params->get('tmpl_core.title_tag', 'h2');?> class="record-title">
-					<?php if( $that->params->get('tmpl_params.title_length', 0) && mb_strlen($item->title) > $that->params->get('tmpl_params.title_length')):?>
-						<?php $item->title = mb_substr($item->title, 0, $that->params->get('tmpl_params.title_length')).$that->params->get('tmpl_params.title_end')?>
-					<?php endif;*/?>
-					<span class="<?php echo $prefix;?>title-text">
-					<?php if(in_array($that->params->get('tmpl_core.item_link'), $that->user->getAuthorisedViewLevels())):?>
-						<a <?php echo $item->nofollow ? 'rel="nofollow"' : '';?> href="<?php echo JRoute::_($item->url);?>">
-							<?php echo $item->title?>
-						</a>
-					<?php else :?>
-						<?php echo $item->title?>
-					<?php endif;?>
-					</span>
-					<?php /*echo CEventsHelper::showNum('record', $item->id);?>
-				</<?php echo $that->params->get('tmpl_core.title_tag', 'h2');?>>
-			</div>
-			<div class="clearfix"></div>
-		<?php endif;?>
-	<?php endif;*/?>
-
+	<span class="<?php echo $prefix;?>title-text">
+	<?php if(in_array($that->params->get('tmpl_core.item_link'), $that->user->getAuthorisedViewLevels())):?>
+		<a <?php echo $item->nofollow ? 'rel="nofollow"' : '';?> href="<?php echo JRoute::_($item->url);?>">
+			<?php echo $item->title?>
+		</a>
+	<?php else :?>
+		<?php echo $item->title?>
+	<?php endif;?>
+	</span>
 <?php
 }
 ?>

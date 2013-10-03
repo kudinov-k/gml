@@ -23,7 +23,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 	<input type="hidden" name="date" id="date<?php echo $record->id?>" size="100"/> -->
 
 	<table>
-		<?php if(isset($this->value['rent']['price'])):?>
+		<?php if(isset($this->value['rent']['price']) && $this->value['rent']['price']):?>
 		<tr>
 			<td>
 				<button type="button" class="btn btn-info btn-small" onclick="bookingAddToCart('rent',<?php echo $this->id;?>,<?php echo $record->id;?>,<?php echo $record->section_id;?>);">
@@ -31,31 +31,24 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 				</button>
 			</td>
 			<td>
-			<?php
-				$units = explode("\n", $this->params->get('params.times_d', ''));
-				$prices = $this->value['rent']['price'];
-				foreach ($units as $key => $unit):
-					if(!isset($prices[$key])) continue;
-				?>
-					<?php echo $unit?> <?php echo $prices[$key]?> <?php echo $this->params->get('params.cur_output', '')?> <?php echo @$main_units[$this->value['rent']['unit']] ?><br />
-				<?php endforeach;?>
+				<?php echo $this->value['rent']['price'];?>
+				<?php echo $this->params->get('params.cur_output', '')?> <?php echo @$main_units[$this->value['rent']['unit']] ?><br />
 			</td>
 		</tr>
 		<?php endif;?>
 
-		<?php if(isset($this->value['sale']['price'])):?>
+		<?php if(isset($this->value['sale']['price']) && $this->value['sale']['price']):?>
 		<tr>
 			<td>
 				<button type="button" class="btn btn-info btn-small" onclick="bookingAddToCart('sale',<?php echo $this->id;?>,<?php echo $record->id;?>,<?php echo $record->section_id;?>);">
 				    <?php echo JText::_('CSALE');?>
 				</button>
 			</td>
-			<td><?php echo @$this->value['sale']['price']?> <?php echo $this->params->get('params.cur_output', '')?></td>
-			<td><?php echo @$main_units[$this->value['sale']['unit']] ?></td>
+			<td><?php echo @$this->value['sale']['price']?> <?php echo $this->params->get('params.cur_output', '')?> <?php echo @$main_units[$this->value['sale']['unit']] ?></td>
 		</tr>
 		<?php endif;?>
 
-		<?php if(isset($this->value['order']['price'])):?>
+		<?php if(isset($this->value['order']['price']) && $this->value['order']['price']):?>
 		<tr>
 			<td>
 				<button type="button" class="btn btn-info btn-small" onclick="bookingAddToCart('order',<?php echo $this->id;?>,<?php echo $record->id;?>,<?php echo $record->section_id;?>);">
@@ -63,14 +56,8 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 				</button>
 			</td>
 			<td>
-			<?php
-				$units = explode("\n", $this->params->get('params.times_h', ''));
-				$prices = $this->value['order']['price'];
-				foreach ($units as $key => $unit):
-					if(!isset($prices[$key])) continue;
-				?>
-					<?php echo $unit?> <?php echo $prices[$key]?> <?php echo $this->params->get('params.cur_output', '')?> <?php echo @$main_units[$this->value['order']['unit']] ?><br />
-				<?php endforeach;?>
+				<?php echo $this->value['order']['price'];?> <?php echo $this->params->get('params.cur_output', '')?>
+				<?php echo @$main_units[$this->value['order']['unit']] ?>
 			</td>
 		</tr>
 		<?php endif;?>
