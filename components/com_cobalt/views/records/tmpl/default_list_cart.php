@@ -220,6 +220,11 @@ function getItemBlock($item, $that, $core_fields = '')
 				?>
 				<?php echo $that->book_field->params->get('params.cur_output')?>
 			</td>
+			<td>
+				<a href="javascript:void(0);" onclick="Cobalt.removeFromCart('rent', <?php echo $item->id;?>);">
+					<img src="<?php echo JUri::root(true);?>/media/mint/icons/16/cross-button.png" alt="" />
+				</a>
+			</td>
 		</tr>
 		<?php endif;?>
 
@@ -248,6 +253,11 @@ function getItemBlock($item, $that, $core_fields = '')
 				?>
 				<?php echo $that->book_field->params->get('params.cur_output')?>
 			</td>
+			<td>
+				<a href="javascript:void(0);" onclick="Cobalt.removeFromCart('sale', <?php echo $item->id;?>);">
+					<img src="<?php echo JUri::root(true);?>/media/mint/icons/16/cross-button.png" alt="" />
+				</a>
+			</td>
 		</tr>
 		<?php endif;?>
 
@@ -268,7 +278,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td>
 				<input type="text" class="input-mini" name="days[order][<?php echo $item->id ?>]"
 					value="<?php echo isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1;?>"/>
-			сут.</td>
+			час.</td>
 			<td>
 				<?php
 					$a = $that->cart['order'][$item->id] * $that->book_field->value['order']['price'] * (isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1);
@@ -277,6 +287,11 @@ function getItemBlock($item, $that, $core_fields = '')
 					echo $a;
 				?>
 				<?php echo $that->book_field->params->get('params.cur_output')?>
+			</td>
+			<td>
+				<a href="javascript:void(0);" onclick="Cobalt.removeFromCart('order', <?php echo $item->id;?>);">
+					<img src="<?php echo JUri::root(true);?>/media/mint/icons/16/cross-button.png" alt="" />
+				</a>
 			</td>
 		</tr>
 		<?php endif;?>

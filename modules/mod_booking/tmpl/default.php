@@ -24,15 +24,10 @@ $doc->addScriptDeclaration("
 				data:{
 					field_id: ".$params->get('booking_id').",
 					func: 'getCart',
-					mod_params: '".$params->toString()."',
- 					cartform: $('#orderForm').serialize()
-// 					days: $('input[name^=\'days\']')
+					mod_params: '".$params->toString()."'
 				}
 			}).done(function(json) {
 				$('#booking_cart').html(json.result);
-				$( '#order_cart' ).button().click(function() {
-					//$( '#dialog-form' ).dialog( 'open' );
-				});
 
 				$('#order_cart').removeClass();
 				$('#order_cart').addClass('btn btn-small btn-success');
@@ -40,7 +35,7 @@ $doc->addScriptDeclaration("
 		}
 	};
 
-	Cobalt.removeFromCart = function(id){
+	Cobalt.removeFromCart = function(type, id){
 		if($('#booking_cart').length)
 		{
 			$.ajax({
@@ -50,7 +45,8 @@ $doc->addScriptDeclaration("
 				data:{
 					field_id: ".$params->get('booking_id').",
 					func: 'removeFromCart',
-					index: id
+					index: id,
+					type: type
 				}
 			}).done(function(json) {
 				Cobalt.updateCart();

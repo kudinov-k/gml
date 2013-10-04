@@ -120,12 +120,14 @@ class JFormFieldCBooking extends CFormField
 
 	public function removeFromCart($post)
 	{
-		$index = $post['index'];
-		if(is_null($index)) AjaxHelper::send(0);
+		$id = $post['index'];
+		$type = $post['type'];
+		if(is_null($id)) AjaxHelper::send(0);
+		if(is_null($type)) AjaxHelper::send(0);
 
 		$app = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
-		unset($cart[$index]);
+		unset($cart[$type][$id]);
 		$app->setUserState('booking_cart', $cart);
 
 		AjaxHelper::send(1);
@@ -141,7 +143,7 @@ class JFormFieldCBooking extends CFormField
 
 		$cart = $app->getUserState('booking_cart', array());
 
-		if(empty($cart))
+		if(empty($cart) || (empty($cart['rent']) && empty($cart['sale']) && empty($cart['order'])))
 			AjaxHelper::send('');
 
 		$c_rent = !empty($cart['rent']) ? array_keys($cart['rent']) : array();

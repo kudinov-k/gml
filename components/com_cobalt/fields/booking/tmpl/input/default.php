@@ -41,7 +41,7 @@ $class = ' class="' . implode(' ', $class) . '"';
 		<tr>
 			<th>Операция</th>
 			<th>Баз.ед.изм</th>
-			<th>Время(ч)</th>
+			<!-- <th>Время(ч)</th> -->
 			<th>Цена</th>
 			<th>Налог</th>
 		</tr>
@@ -64,19 +64,15 @@ $class = ' class="' . implode(' ', $class) . '"';
 					<?php endforeach;?>
 				</select>
 			</td>
-			<td>
+			<!-- <td>
 				<input type="checkbox" />
-			</td>
+			</td> -->
 			<td>
-				<table class="table">
 				<?php
 				$rent_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : 0;
 				?>
-					<tr>
-					<td>день</td>
-					<td><input type="text" value="<?php echo $rent_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][rent][price]" /></td>
-					</tr>
-				</table>
+				день
+				<input type="text" value="<?php echo $rent_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][rent][price]" />
 			</td>
 			<td>
 				<select name="jform[fields][<?php echo $this->id;?>][tax][]" multiple="multiplr" style="width:150px;">
@@ -114,9 +110,7 @@ $class = ' class="' . implode(' ', $class) . '"';
 					<?php endforeach;?>
 				</select>
 			</td>
-			<td>
 
-			</td>
 			<td>
 				<?php
 					$v = null;
@@ -146,19 +140,15 @@ $class = ' class="' . implode(' ', $class) . '"';
 					<?php endforeach;?>
 				</select>
 			</td>
-			<td>
+			<!-- <td>
 				<input type="checkbox" />
-			</td>
+			</td> -->
 			<td>
-				<table>
 				<?php
 				$order_price = isset($this->value['order']) ? $this->value['order']['price'] : 0;
 				?>
-					<tr>
-					<td>час</td>
-					<td><input type="text" value="<?php echo $order_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][order][price]" /></td>
-					</tr>
-				</table>
+				час
+				<input type="text" value="<?php echo $order_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][order][price]" />
 			</td>
 
 		</tr>
