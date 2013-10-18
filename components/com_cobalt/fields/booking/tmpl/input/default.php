@@ -41,8 +41,9 @@ $class = ' class="' . implode(' ', $class) . '"';
 		<tr>
 			<th>Операция</th>
 			<th>Баз.ед.изм</th>
-			<!-- <th>Время(ч)</th> -->
+			<th>Время</th>
 			<th>Цена</th>
+			<th>Фикс.</th>
 			<th>Налог</th>
 		</tr>
 	</thead>
@@ -64,18 +65,17 @@ $class = ' class="' . implode(' ', $class) . '"';
 					<?php endforeach;?>
 				</select>
 			</td>
-			<!-- <td>
-				<input type="checkbox" />
-			</td> -->
+			<td>день</td>
 			<td>
 				<?php
 				$rent_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : 0;
+				$fix = isset($this->value['rent']['fix']) ? 'checked="checked"' : null;
 				?>
-				день
 				<input type="text" value="<?php echo $rent_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][rent][price]" />
 			</td>
+			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][rent][fix]" <?php echo $fix;?> /></td>
 			<td>
-				<select name="jform[fields][<?php echo $this->id;?>][tax][]" multiple="multiplr" style="width:150px;">
+				<select name="jform[fields][<?php echo $this->id;?>][tax][]" multiple="multiple" style="width:150px;">
 					<?php
 					$taxs = explode("\n", $this->params->get('params.tax', ''));
 					$v_taxes = $this->value['tax'];
@@ -110,7 +110,7 @@ $class = ' class="' . implode(' ', $class) . '"';
 					<?php endforeach;?>
 				</select>
 			</td>
-
+			<td>&nbsp;</td>
 			<td>
 				<?php
 					$v = null;
@@ -140,16 +140,15 @@ $class = ' class="' . implode(' ', $class) . '"';
 					<?php endforeach;?>
 				</select>
 			</td>
-			<!-- <td>
-				<input type="checkbox" />
-			</td> -->
+			<td>час</td>
 			<td>
 				<?php
 				$order_price = isset($this->value['order']) ? $this->value['order']['price'] : 0;
+				$fix = isset($this->value['order']['fix']) ? 'checked="checked"' : null;
 				?>
-				час
 				<input type="text" value="<?php echo $order_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][order][price]" />
 			</td>
+			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][order][fix]" <?php echo $fix;?> /></td>
 
 		</tr>
 	</tbody>
