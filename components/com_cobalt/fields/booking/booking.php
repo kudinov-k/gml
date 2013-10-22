@@ -12,6 +12,7 @@ require_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components/com_cobalt/library/php
 
 class JFormFieldCBooking extends CFormField
 {
+	public static $kurs = 0;
 
 	public function getInput()
 	{
@@ -54,12 +55,21 @@ class JFormFieldCBooking extends CFormField
 	{
 		//$this->disable_dates = $this->_getDisabledDates($record);
 
-		$currencies['USD'] = 'R01235';
-		$currencies['EUR'] = 'R01239';
+		if(!self::$kurs)
+		{
+			$currencies['USD'] = 'R01235';
+			$currencies['EUR'] = 'R01239';
 
 
+			$scripturl = 'http://www.cbr.ru/scripts/XML_dynamic.asp';
 
-		$this->kurs = 1;
+			$date = JFactory::getDate()->format('d/m/Y');
+			$currency_code = $currencies[$this->params->get('params.cur_input')];
+			$requrl = "{$scripturl}?date_req1={$date}&date_req2={$date}&VAL_NM_RQ={$currency_code}";
+
+			$xml = new SimpleXMLElement($requrl, LIBXML_COMPACT, true);
+			self::$kurs = (string)$xml->children()->Record->Value;
+		}
 		return $this->_display_output($view, $record, $type, $section);
 	}
 
