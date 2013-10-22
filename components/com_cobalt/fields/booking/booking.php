@@ -53,6 +53,13 @@ class JFormFieldCBooking extends CFormField
 	private function _render($view, $record, $type, $section)
 	{
 		//$this->disable_dates = $this->_getDisabledDates($record);
+
+		$currencies['USD'] = 'R01235';
+		$currencies['EUR'] = 'R01239';
+
+
+
+		$this->kurs = 1;
 		return $this->_display_output($view, $record, $type, $section);
 	}
 
