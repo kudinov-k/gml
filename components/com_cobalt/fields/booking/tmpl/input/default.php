@@ -121,6 +121,8 @@ $class = ' class="' . implode(' ', $class) . '"';
 				?>
 				<input type="text" value="<?php echo $v;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][sale][price]" />
 			</td>
+			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][order][fix]" <?php echo $fix;?> /></td>
+
 		</tr>
 
 		<tr>
