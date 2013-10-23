@@ -31,7 +31,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 				</button>
 			</td>
 			<td>
-				<?php echo $this->value['rent']['price'];?>
+				<?php echo $this->getReadyPrice($this->value['rent']['price']);?>
 				<?php echo $this->params->get('params.cur_output', '')?> <?php echo @$main_units[$this->value['rent']['unit']] ?><br />
 			</td>
 		</tr>

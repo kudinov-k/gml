@@ -60,17 +60,33 @@ class JFormFieldCBooking extends CFormField
 			$currencies['USD'] = 'R01235';
 			$currencies['EUR'] = 'R01239';
 
+			if(isset($currencies[$this->params->get('params.cur_input')]))
+			{
+				$scripturl = 'http://www.cbr.ru/scripts/XML_dynamic.asp';
 
-			$scripturl = 'http://www.cbr.ru/scripts/XML_dynamic.asp';
+				$date = JFactory::getDate()->format('d/m/Y');
+				$currency_code = $currencies[$this->params->get('params.cur_input')];
+				$requrl = "{$scripturl}?date_req1={$date}&date_req2={$date}&VAL_NM_RQ={$currency_code}";
 
-			$date = JFactory::getDate()->format('d/m/Y');
-			$currency_code = $currencies[$this->params->get('params.cur_input')];
-			$requrl = "{$scripturl}?date_req1={$date}&date_req2={$date}&VAL_NM_RQ={$currency_code}";
-
-			$xml = new SimpleXMLElement($requrl, LIBXML_COMPACT, true);
-			self::$kurs = (string)$xml->children()->Record->Value;
+				$xml = new SimpleXMLElement($requrl, LIBXML_COMPACT, true);
+				self::$kurs = (string)$xml->children()->Record->Value;
+			}
+			else
+			{
+				self::$kurs = 1;
+			}
 		}
+		$this->kurs = self::$kurs;
+		$this->kurs = str_replace(',', '.', $this->kurs);
 		return $this->_display_output($view, $record, $type, $section);
+	}
+
+	public function getReadyPrice($price)
+	{
+		$price *= $this->kurs;
+		//$price += $price * $this->params->get('params.procent', 1) / 100;
+
+		return $price;//round($price, -1, PHP_ROUND_HALF_ODD);
 	}
 
 	private function _getDisabledDates($record)
