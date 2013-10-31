@@ -44,6 +44,7 @@ $class = ' class="' . implode(' ', $class) . '"';
 			<th>Время</th>
 			<th>Цена</th>
 			<th>Фикс.</th>
+			<th>Без налогов</th>
 			<th>Налог</th>
 		</tr>
 	</thead>
@@ -70,10 +71,12 @@ $class = ' class="' . implode(' ', $class) . '"';
 				<?php
 				$rent_price = isset($this->value['rent']['price']) ? $this->value['rent']['price'] : 0;
 				$fix = isset($this->value['rent']['fix']) ? 'checked="checked"' : null;
+				$_tax = isset($this->value['rent']['tax']) ? 'checked="checked"' : null;
 				?>
 				<input type="text" value="<?php echo $rent_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][rent][price]" />
 			</td>
 			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][rent][fix]" <?php echo $fix;?> /></td>
+			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][rent][tax]" <?php echo $_tax;?> /></td>
 			<td>
 				<select name="jform[fields][<?php echo $this->id;?>][tax][]" multiple="multiple" style="width:150px;">
 					<?php
@@ -118,9 +121,13 @@ $class = ' class="' . implode(' ', $class) . '"';
 					{
 						$v = $this->value['sale']['price'];
 					}
+					$fix = isset($this->value['sale']['fix']) ? 'checked="checked"' : null;
+					$_tax = isset($this->value['sale']['tax']) ? 'checked="checked"' : null;
 				?>
 				<input type="text" value="<?php echo $v;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][sale][price]" />
 			</td>
+			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][sale][fix]" <?php echo $fix;?> /></td>
+			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][sale][tax]" <?php echo $_tax;?> /></td>
 		</tr>
 
 		<tr>
@@ -145,10 +152,12 @@ $class = ' class="' . implode(' ', $class) . '"';
 				<?php
 				$order_price = isset($this->value['order']) ? $this->value['order']['price'] : 0;
 				$fix = isset($this->value['order']['fix']) ? 'checked="checked"' : null;
+				$_tax = isset($this->value['order']['tax']) ? 'checked="checked"' : null;
 				?>
 				<input type="text" value="<?php echo $order_price;?>" class="input-mini" name="jform[fields][<?php echo $this->id;?>][order][price]" />
 			</td>
 			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][order][fix]" <?php echo $fix;?> /></td>
+			<td><input type="checkbox" name="jform[fields][<?php echo $this->id;?>][order][tax]" <?php echo $_tax;?> /></td>
 
 		</tr>
 	</tbody>
