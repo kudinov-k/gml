@@ -81,12 +81,44 @@ class JFormFieldCBooking extends CFormField
 		return $this->_display_output($view, $record, $type, $section);
 	}
 
-	public function getReadyPrice($price)
+	public function getReadyPrice($value)
 	{
-		$price *= $this->kurs;
-		$price += $price * $this->params->get('params.percent', 1) / 100;
+		$result = empty($value['price']) ? 0 : $value['price'];
+		if(!isset($value['fix']))
+		{
+			$result *= $this->kurs;
+			$result += round($result * $this->params->get('params.percent', 1) / 100);
 
-		return round($price, -1, PHP_ROUND_HALF_UP);
+			if(!isset($value['tax']))
+			{
+				$result = $this->_getTax($result);
+			}
+		}
+		$press = round(strlen($result) / 2);
+		$press = pow(10, $press);
+		$result = ceil($result / $press) * $press;
+		return $result;
+	}
+
+	private function _getTax($price)
+	{
+		$tax = $this->params->get('params.tax');
+		$tax = explode("\n", $tax);
+
+		$formulas = $this->params->get('params.formula');
+		$formulas = explode("\n", $formulas);
+		if (empty($formulas) || empty($tax))
+		{
+			return;
+		}
+		$result = $price;
+		foreach ($formulas as $key => $formula)
+		{
+			if (!isset($tax[$key])) continue;
+			eval('$_tax = '.str_replace("[PRICE]", $price, $formula).';');
+			$result += $_tax;
+		}
+		return round($result);
 	}
 
 	private function _getDisabledDates($record)
