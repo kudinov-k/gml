@@ -17,7 +17,6 @@ $doc->addScript(JUri::root(true).'/components/com_cobalt/fields/booking/assets/b
 $main_units = explode("\n", $this->params->get('params.unit', ''));
 ?>
 
-
 <div id="booking<?php echo $record->id?>" >
 	<!--  <div id="datepicker<?php echo $record->id?>"></div>
 	<input type="hidden" name="date" id="date<?php echo $record->id?>" size="100"/> -->
@@ -79,6 +78,5 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		</tr>
 		<?php endif;?>
 	</table>
-
 
 </div>
