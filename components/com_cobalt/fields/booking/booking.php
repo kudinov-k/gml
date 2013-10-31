@@ -84,9 +84,9 @@ class JFormFieldCBooking extends CFormField
 	public function getReadyPrice($price)
 	{
 		$price *= $this->kurs;
-		//$price += $price * $this->params->get('params.procent', 1) / 100;
+		$price += $price * $this->params->get('params.percent', 1) / 100;
 
-		return $price;//round($price, -1, PHP_ROUND_HALF_ODD);
+		return round($price, -1, PHP_ROUND_HALF_UP);
 	}
 
 	private function _getDisabledDates($record)
