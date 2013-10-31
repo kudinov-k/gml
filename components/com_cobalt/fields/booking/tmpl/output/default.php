@@ -56,10 +56,6 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 				<?php endif;?>
 
 			<?php echo $this->params->get('params.cur_output', '')?> <?php echo @$main_units[$this->value['sale']['unit']] ?></td>
-<<<<<<< HEAD
-
-=======
->>>>>>> 351bb21d6367caeb3462d53bf8a58c1b1106ecdc
 		</tr>
 		<?php endif;?>
 
