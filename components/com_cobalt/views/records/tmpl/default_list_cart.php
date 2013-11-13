@@ -199,7 +199,17 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
 			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CRENT');?></td>
-			<td><?php echo $that->book_field->value['rent']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>
+				<?php
+					if(!isset($that->book_field->value['rent']['fix'])){
+						$price = $that->book_field->getReadyPrice($that->book_field->value['rent']);
+					} else {
+						$price = @$that->book_field->value['rent']['price'];
+					}
+					echo $price;
+				?>
+
+			<?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>сут.</td>
 			<td><input type="text" class="input-mini" name="amount[rent][<?php echo $item->id ?>]" value="<?php echo $that->cart['rent'][$item->id]?>"/>
 
@@ -213,7 +223,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			сут.</td>
 			<td>
 				<?php
-					$a = $that->cart['rent'][$item->id] * $that->book_field->value['rent']['price'] * (isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1);
+					$a = $that->cart['rent'][$item->id] * $price * (isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1);
 					$that->total_cat += $a;
 					$that->total += $a;
 					echo $a;
@@ -235,7 +245,17 @@ function getItemBlock($item, $that, $core_fields = '')
 				<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
 			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CSALE');?></td>
-			<td><?php echo $that->book_field->value['sale']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>
+				<?php
+					if(!isset($that->book_field->value['sale']['fix'])){
+						$price = $that->book_field->getReadyPrice($that->book_field->value['sale']);
+					} else {
+						$price = @$that->book_field->value['sale']['price'];
+					}
+					echo $price;
+				?>
+
+			 <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>&nbsp;</td>
 			<td><input type="text" class="input-mini" name="amount[sale][<?php echo $item->id ?>]" value="<?php echo $that->cart['sale'][$item->id]?>"/>
 
@@ -246,7 +266,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td>&nbsp;</td>
 			<td>
 				<?php
-					$a = $that->cart['sale'][$item->id] * $that->book_field->value['sale']['price'] * 1;
+					$a = $that->cart['sale'][$item->id] * $price * 1;
 					$that->total_cat += $a;
 					$that->total += $a;
 					echo $a;
@@ -267,7 +287,17 @@ function getItemBlock($item, $that, $core_fields = '')
 				<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
 			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CORDER');?></td>
-			<td><?php echo $that->book_field->value['order']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>
+				<?php
+					if(!isset($that->book_field->value['order']['fix'])){
+						$price = $that->book_field->getReadyPrice($that->book_field->value['order']);
+					} else {
+						$price = @$that->book_field->value['order']['price'];
+					}
+					echo $price;
+				?>
+
+			<?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>час.</td>
 			<td><input type="text" class="input-mini" name="amount[order][<?php echo $item->id ?>]" value="<?php echo $that->cart['order'][$item->id]?>"/>
 
@@ -281,7 +311,7 @@ function getItemBlock($item, $that, $core_fields = '')
 			час.</td>
 			<td>
 				<?php
-					$a = $that->cart['order'][$item->id] * $that->book_field->value['order']['price'] * (isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1);
+					$a = $that->cart['order'][$item->id] * $price * (isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1);
 					$that->total_cat += $a;
 					$that->total += $a;
 					echo $a;

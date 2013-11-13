@@ -5,9 +5,9 @@
 
 	<config><fields name="params">
 		<fieldset name="tmpl">
-			<field type="filelist" name="template_input" filter="php$" hide_none="1" hide_default="1" directory="/components/com_cobalt/fields/text/tmpl/input" label="F_TMPLINPUT" default="default.php" />
-			<field type="filelist" name="template_output_list" filter="php$" hide_none="1" hide_default="1" directory="/components/com_cobalt/fields/text/tmpl/output" label="F_TMPLLIST" default="default.php" />
-			<field type="filelist" name="template_output_full" filter="php$" hide_none="1" hide_default="1" directory="/components/com_cobalt/fields/text/tmpl/output" label="F_TMPLFULL" default="default.php" />
+			<field type="filelist" name="template_input" filter="php$" hide_none="1" hide_default="1" directory="/components/com_cobalt/fields/booking/tmpl/input" label="F_TMPLINPUT" default="default.php" />
+			<field type="filelist" name="template_output_list" filter="php$" hide_none="1" hide_default="1" directory="/components/com_cobalt/fields/booking/tmpl/output" label="F_TMPLLIST" default="default.php" />
+			<field type="filelist" name="template_output_full" filter="php$" hide_none="1" hide_default="1" directory="/components/com_cobalt/fields/booking/tmpl/output" label="F_TMPLFULL" default="default.php" />
 		</fieldset>
 
 		<fieldset name="general" label="FS_GENERAL">

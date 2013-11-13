@@ -53,8 +53,12 @@ class JFormFieldCBooking extends CFormField
 
 	private function _render($view, $record, $type, $section)
 	{
-		//$this->disable_dates = $this->_getDisabledDates($record);
+		$this->getkurs();
+		return $this->_display_output($view, $record, $type, $section);
+	}
 
+	public function getkurs()
+	{
 		if(!self::$kurs)
 		{
 			$currencies['USD'] = 'R01235';
@@ -78,11 +82,11 @@ class JFormFieldCBooking extends CFormField
 		}
 		$this->kurs = self::$kurs;
 		$this->kurs = str_replace(',', '.', $this->kurs);
-		return $this->_display_output($view, $record, $type, $section);
 	}
 
 	public function getReadyPrice($value)
 	{
+		if(!$this->kurs) $this->getkurs();
 		$result = empty($value['price']) ? 0 : $value['price'];
 		if(!isset($value['fix']))
 		{
