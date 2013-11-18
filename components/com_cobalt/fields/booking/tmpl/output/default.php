@@ -30,7 +30,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 				</button>
 			</td>
 			<td>
-				<?php echo $this->getReadyPrice($this->value['rent']);?>
+				<?php echo $this->nformat($this->getReadyPrice($this->value['rent']));?>
 				<?php echo JText::_($this->params->get('params.cur_output', ''))?> <?php echo @$main_units[$this->value['rent']['unit']] ?><br />
 			</td>
 		</tr>
@@ -44,7 +44,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 				</button>
 			</td>
 			<td>
-			<?php echo $this->getReadyPrice($this->value['sale']);?>
+			<?php echo $this->nformat($this->getReadyPrice($this->value['sale']));?>
 			<?php echo JText::_($this->params->get('params.cur_output', ''))?> <?php echo @$main_units[$this->value['sale']['unit']] ?></td>
 		</tr>
 		<?php endif;?>
@@ -57,7 +57,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 				</button>
 			</td>
 			<td>
-				<?php echo $this->getReadyPrice($this->value['order']);?>
+				<?php echo $this->nformat($this->getReadyPrice($this->value['order']));?>
 				<?php echo JText::_($this->params->get('params.cur_output', ''));?>
 				<?php echo @$main_units[$this->value['order']['unit']] ?>
 			</td>

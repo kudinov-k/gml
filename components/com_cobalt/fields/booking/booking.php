@@ -66,14 +66,21 @@ class JFormFieldCBooking extends CFormField
 
 			if(isset($currencies[$this->params->get('params.cur_input')]))
 			{
-				$scripturl = 'http://www.cbr.ru/scripts/XML_dynamic.asp';
+				$scripturl = 'http://www.cbr.ru/scripts/XML_daily.asp';
 
 				$date = JFactory::getDate()->format('d/m/Y');
 				$currency_code = $currencies[$this->params->get('params.cur_input')];
-				$requrl = "{$scripturl}?date_req1={$date}&date_req2={$date}&VAL_NM_RQ={$currency_code}";
+				$requrl = "{$scripturl}?date_req={$date}";
 
 				$xml = new SimpleXMLElement($requrl, LIBXML_COMPACT, true);
-				self::$kurs = (string)$xml->children()->Record->Value;
+
+				foreach ($xml->children() as $child)
+				{
+					if((string)$child->attributes()->ID == $currency_code)
+					{
+						self::$kurs = (string)$child->Value;
+					}
+				}
 			}
 			else
 			{
@@ -84,7 +91,7 @@ class JFormFieldCBooking extends CFormField
 		$this->kurs = str_replace(',', '.', $this->kurs);
 	}
 
-	public function getReadyPrice($value)
+	public function getReadyPrice($value, $cart = false)
 	{
 		if(!$this->kurs) $this->getkurs();
 		$result = empty($value['price']) ? 0 : $value['price'];
@@ -93,15 +100,22 @@ class JFormFieldCBooking extends CFormField
 			$result *= $this->kurs;
 			$result += round($result * $this->params->get('params.percent', 1) / 100);
 
-			if(!isset($value['tax']))
+			if(!isset($value['tax']) && !$cart)
 			{
 				$result = $this->_getTax($result);
 			}
 		}
-		$press = round(strlen($result) / 2);
-		$press = pow(10, $press);
-		$result = ceil($result / $press) * $press;
+		$result = round($result);
+// 		$press = round(strlen($result) / 2);
+// 		$press = pow(10, $press);
+// 		$result = ceil($result / $press) * $press;
+
 		return $result;
+	}
+
+	public function nformat($text)
+	{
+		return number_format($text, 0, '.', ' ');
 	}
 
 	private function _getTax($price)

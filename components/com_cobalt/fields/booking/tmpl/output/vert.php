@@ -22,7 +22,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		<tr>
 			<td>
 				<span class="price">
-					<?php echo $this->getReadyPrice($this->value['rent']);?>
+					<?php echo $this->nformat($this->getReadyPrice($this->value['rent']));?>
 					<?php echo JText::_($this->params->get('params.cur_output', ''))?>
 				</span>
 			</td>
@@ -63,7 +63,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		<tr>
 			<td>
 				<span class="price">
-					<?php echo $this->getReadyPrice($this->value['sale']);?>
+					<?php echo $this->nformat($this->getReadyPrice($this->value['sale']));?>
 					<?php echo JText::_($this->params->get('params.cur_output', ''))?>
 				</span>
 			</td>
@@ -103,7 +103,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		<tr>
 			<td>
 				<span class="price">
-					<?php echo $this->getReadyPrice($this->value['order']);?>
+					<?php echo $this->nformat($this->getReadyPrice($this->value['order']));?>
 					<?php echo JText::_($this->params->get('params.cur_output', ''));?>
 				</span>
 			</td>
