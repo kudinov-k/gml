@@ -102,7 +102,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 						<table class="pull-right">
 							<tr>
 								<td>Всего по разделу</td>
-								<td><?php echo $this->book_field->nformat(ceil($this->total_cat));?>
+								<td><?php echo $this->book_field->nformat(round($this->total_cat, -1));?>
 								<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 							</tr>
 
@@ -110,7 +110,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 
 							<tr>
 								<td>Итого по разделу</td>
-								<td><?php echo $this->book_field->nformat(ceil($this->total_cat + $this->tax_cat));?>
+								<td><?php echo $this->book_field->nformat(round($this->total_cat + $this->tax_cat, -1));?>
 								<?php echo JText::_($this->book_field->params->get('params.cur_output'))?></td>
 							</tr>
 						</table>
@@ -125,7 +125,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 		<table class="table">
 			<tr>
 				<td>Всего</td>
-				<td><?php echo $this->book_field->nformat(ceil($this->total));?>
+				<td><?php echo $this->book_field->nformat(round($this->total, -1));?>
 				<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 			</tr>
 
@@ -134,7 +134,7 @@ if($this->params->get('tmpl_params.show_cats', 1))
 
 			<tr>
 				<td>Итого</td>
-				<td><?php echo $this->book_field->nformat(ceil($this->total + $this->tax_cat)); ?>
+				<td><?php echo $this->book_field->nformat(round($this->total + $this->tax_cat, -1)); ?>
 				<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 			</tr>
 
@@ -172,7 +172,7 @@ function getTax($price, $field, $that)
 			<?php
 				$that->tax_cat += $_tax;
 			?>
-			<?php echo $that->book_field->nformat(round($_tax));?>
+			<?php echo $that->book_field->nformat(round($_tax, -1));?>
 			<?php echo JText::_($that->book_field->params->get('params.cur_output'));?>
 		</td>
 	</tr>

@@ -28,7 +28,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 			</td>
 		</tr>
 
-		<?php $taxes = $this->params->get('params.tax', false);?>
+		<?php $taxes = isset($this->value['tax']) ? $this->value['tax'] : false;?>
 		<?php if(!empty($taxes)):?>
 		<tr>
 			<td>
@@ -39,7 +39,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 						Не включая
 					<?php endif;?>
 
-					<?php echo str_replace("\n", ', ', $this->params->get('params.tax'));?>
+					<?php echo implode(', ', $this->getSelectedTaxesNames());?>
 				</span>
 			</td>
 		</tr>
@@ -79,7 +79,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 						Не включая
 					<?php endif;?>
 
-					<?php echo str_replace("\n", ', ', $this->params->get('params.tax'));?>
+					<?php echo implode(', ', $this->getSelectedTaxesNames());?>
 				</span>
 			</td>
 		</tr>
@@ -118,7 +118,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 						Не включая
 					<?php endif;?>
 
-					<?php echo str_replace("\n", ', ', $this->params->get('params.tax'));?>
+					<?php echo implode(', ', $this->getSelectedTaxesNames());?>
 				</span>
 			</td>
 		</tr>

@@ -105,7 +105,7 @@ class JFormFieldCBooking extends CFormField
 				$result = $this->_getTax($result);
 			}
 		}
-		$result = round($result);
+		$result = round($result, -1);
 // 		$press = round(strlen($result) / 2);
 // 		$press = pow(10, $press);
 // 		$result = ceil($result / $press) * $press;
@@ -118,8 +118,18 @@ class JFormFieldCBooking extends CFormField
 		return number_format($text, 0, '.', ' ');
 	}
 
+	public function getSelectedTaxesNames()
+	{
+		if(!isset($this->value['tax']) || !$this->value['tax']) return array();
+		$tax = $this->params->get('params.tax');
+		$tax = explode("\n", $tax);
+		return array_intersect_key($tax, $this->value['tax']);
+	}
+
 	private function _getTax($price)
 	{
+		if(!isset($this->value['tax']) || !$this->value['tax']) return $price;
+
 		$tax = $this->params->get('params.tax');
 		$tax = explode("\n", $tax);
 
@@ -132,7 +142,7 @@ class JFormFieldCBooking extends CFormField
 		$result = $price;
 		foreach ($formulas as $key => $formula)
 		{
-			if (!isset($tax[$key])) continue;
+			if (!isset($tax[$key]) || !in_array($key, $this->value['tax'])) continue;
 			eval('$_tax = '.str_replace("[PRICE]", $price, $formula).';');
 			$result += $_tax;
 		}
