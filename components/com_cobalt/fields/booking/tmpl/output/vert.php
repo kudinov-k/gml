@@ -20,18 +20,22 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 	<table>
 		<?php if(isset($this->value['rent']['price']) && $this->value['rent']['price']):?>
 		<tr>
-			<td>
+			<td class="price-td">
 				<span class="price">
 					<?php echo $this->nformat($this->getReadyPrice($this->value['rent']));?>
 					<?php echo JText::_($this->params->get('params.cur_output', ''))?>
 				</span>
 			</td>
 		</tr>
-
+		<tr>
+			<td class="unit-td">
+				<span class="unit"><?php echo @$main_units[$this->value['rent']['unit']] ?></span>
+			</td>
+		</tr>
 		<?php $taxes = isset($this->value['tax']) ? $this->value['tax'] : false;?>
 		<?php if(!empty($taxes)):?>
 		<tr>
-			<td>
+			<td  class="tax-td">
 				<span class="tax">
 					<?php if(!isset($this->value['rent']['tax'])):?>
 						Включая
@@ -45,12 +49,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		</tr>
 		<?php endif;?>
 		<tr>
-			<td>
-				<span class="unit">за сутки</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
+			<td class="button-td">
 				<button type="button" class="btn btn-info btn-small" onclick="bookingAddToCart('rent',<?php echo $this->id;?>,<?php echo $record->id;?>,<?php echo $record->section_id;?>);">
 				    <?php echo JText::_('CRENT');?>
 				</button>
@@ -61,17 +60,21 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		<?php if(isset($this->value['sale']['price']) && $this->value['sale']['price']):?>
 
 		<tr>
-			<td>
+			<td class="price-td">
 				<span class="price">
 					<?php echo $this->nformat($this->getReadyPrice($this->value['sale']));?>
 					<?php echo JText::_($this->params->get('params.cur_output', ''))?>
 				</span>
 			</td>
 		</tr>
-
+		<tr>
+			<td class="unit-td">
+				<span class="unit"><?php echo @$main_units[$this->value['sale']['unit']] ?></span>
+			</td>
+		</tr>
 		<?php if(!empty($taxes)):?>
 		<tr>
-			<td>
+			<td class="tax-td">
 				<span class="tax">
 					<?php if(!isset($this->value['sale']['tax'])):?>
 						Включая
@@ -85,12 +88,7 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		</tr>
 		<?php endif;?>
 		<tr>
-			<td>
-				<span class="unit">за штуку</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
+			<td class="button-td">
 				<button type="button" class="btn btn-info btn-small" onclick="bookingAddToCart('sale',<?php echo $this->id;?>,<?php echo $record->id;?>,<?php echo $record->section_id;?>);">
 				    <?php echo JText::_('CSALE');?>
 				</button>
@@ -99,18 +97,22 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 		<?php endif;?>
 
 		<?php if(isset($this->value['order']['price']) && $this->value['order']['price']):?>
-
 		<tr>
-			<td>
+			<td class="price-td">
 				<span class="price">
 					<?php echo $this->nformat($this->getReadyPrice($this->value['order']));?>
 					<?php echo JText::_($this->params->get('params.cur_output', ''));?>
 				</span>
 			</td>
 		</tr>
+		<tr>
+			<td class="unit-td">
+				<span class="unit"><?php echo @$main_units[$this->value['order']['unit']] ?></span>
+			</td>
+		</tr>
 		<?php if(!empty($taxes)):?>
 		<tr>
-			<td>
+			<td class="tax-td">
 				<span class="tax">
 					<?php if(!isset($this->value['order']['tax'])):?>
 						Включая
@@ -123,14 +125,9 @@ $main_units = explode("\n", $this->params->get('params.unit', ''));
 			</td>
 		</tr>
 		<?php endif;?>
-		<tr>
-			<td>
-				<span class="unit">за штуку</span>
-			</td>
-		</tr>
 
 		<tr>
-			<td>
+			<td class="button-td">
 				<button type="button" class="btn btn-info btn-small" onclick="bookingAddToCart('order',<?php echo $this->id;?>,<?php echo $record->id;?>,<?php echo $record->section_id;?>);">
 				    <?php echo JText::_('CORDER');?>
 				</button>

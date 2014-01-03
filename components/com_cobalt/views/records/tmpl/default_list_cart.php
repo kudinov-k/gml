@@ -54,6 +54,10 @@ if($this->params->get('tmpl_params.show_cats', 1))
 	padding: 5px;
 	margin-bottom: 10px;
 }
+.cart-input{
+	width:30px !important;
+}
+
 </style>
 
 <?php //if($this->params->get('tmpl_params.show_cats', 1)):?>
@@ -106,7 +110,9 @@ if($this->params->get('tmpl_params.show_cats', 1))
 								<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 							</tr>
 
-							<?php echo getTax($this->total_cat, $this->book_field, $this);?>
+							<?php if(empty($this->cart['unf'])):?>
+								<?php echo getTax($this->total_cat, $this->book_field, $this);?>
+							<?php endif;?>
 
 							<tr>
 								<td>Итого по разделу</td>
@@ -124,13 +130,31 @@ if($this->params->get('tmpl_params.show_cats', 1))
 	<div class="pull-right">
 		<table class="table">
 			<tr>
+				<td>Имею УНФ</td>
+				<?php
+					$checked = !empty($this->cart['unf']) ? 'checked="checked"' : '';
+				?>
+				<td><input type="checkbox" name="unf" <?php echo $checked;?> value="1" /></td>
+			</tr>
+			<tr>
+				<td>Количество дней<br /><span class="small">(применится ко всем товарам)</span></td>
+				<td><input type="text" class="cart-input" name="total_days" value="<?php echo !empty($this->cart['total_days']) ? $this->cart['total_days'] : 1;?>" /></td>
+			</tr>
+		</table>
+	</div>
+	<div class="clearfix"></div>
+	<div class="pull-right">
+		<table class="table">
+			<tr>
 				<td>Всего</td>
 				<td><?php echo $this->book_field->nformat(round($this->total, -1));?>
 				<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 			</tr>
 
-			<?php $this->tax_cat = 0;?>
-			<?php echo getTax($this->total, $this->book_field, $this);?>
+			<?php if(empty($this->cart['unf'])):?>
+				<?php $this->tax_cat = 0;?>
+				<?php echo getTax($this->total, $this->book_field, $this);?>
+			<?php endif;?>
 
 			<tr>
 				<td>Итого</td>
@@ -216,14 +240,14 @@ function getItemBlock($item, $that, $core_fields = '')
 
 			<?php echo JText::_($that->book_field->params->get('params.cur_output'));?></td>
 			<td>сут.</td>
-			<td><input type="text" class="input-mini" name="amount[rent][<?php echo $item->id ?>]" value="<?php echo $that->cart['rent'][$item->id]?>"/>
+			<td><input type="text" class="cart-input" name="amount[rent][<?php echo $item->id ?>]" value="<?php echo $that->cart['rent'][$item->id]?>"/>
 
 				<?php
 					echo isset($that->book_field->units[$that->book_field->value['rent']['unit']]) ? $that->book_field->units[$that->book_field->value['rent']['unit']] : 'No unit';
 				?>
 			</td>
 			<td>
-				<input type="text" class="input-mini" name="days[rent][<?php echo $item->id ?>]"
+				<input type="text" class="cart-input" name="days[rent][<?php echo $item->id ?>]"
 					value="<?php echo isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1;?>"/>
 			сут.</td>
 			<td>
@@ -262,7 +286,7 @@ function getItemBlock($item, $that, $core_fields = '')
 
 			 <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>&nbsp;</td>
-			<td><input type="text" class="input-mini" name="amount[sale][<?php echo $item->id ?>]" value="<?php echo $that->cart['sale'][$item->id]?>"/>
+			<td><input type="text" class="cart-input" name="amount[sale][<?php echo $item->id ?>]" value="<?php echo $that->cart['sale'][$item->id]?>"/>
 
 				<?php
 					echo isset($that->book_field->units[$that->book_field->value['sale']['unit']]) ? $that->book_field->units[$that->book_field->value['sale']['unit']] : 'No unit';
@@ -304,14 +328,14 @@ function getItemBlock($item, $that, $core_fields = '')
 
 			<?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>час.</td>
-			<td><input type="text" class="input-mini" name="amount[order][<?php echo $item->id ?>]" value="<?php echo $that->cart['order'][$item->id]?>"/>
+			<td><input type="text" class="cart-input" name="amount[order][<?php echo $item->id ?>]" value="<?php echo $that->cart['order'][$item->id]?>"/>
 
 				<?php
 					echo isset($that->book_field->units[$that->book_field->value['order']['unit']]) ? $that->book_field->units[$that->book_field->value['order']['unit']] : 'No unit';
 				?>
 			</td>
 			<td>
-				<input type="text" class="input-mini" name="days[order][<?php echo $item->id ?>]"
+				<input type="text" class="cart-input" name="days[order][<?php echo $item->id ?>]"
 					value="<?php echo isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1;?>"/>
 			час.</td>
 			<td>

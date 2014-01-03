@@ -2,5 +2,29 @@
 
 
 .unit{
-	font-weight: bold;
+
 }
+
+.unit-td{
+	
+}
+
+.price-td{
+
+	font-size: 16px;
+	color: black;
+	padding-top: 5px;
+	padding-bottom: 5px;
+
+}
+
+.tax-td{
+	padding: 2px;
+}
+
+.button-td{
+
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+

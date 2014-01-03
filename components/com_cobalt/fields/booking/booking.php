@@ -12,7 +12,7 @@ require_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components/com_cobalt/library/php
 
 class JFormFieldCBooking extends CFormField
 {
-	public static $kurs = 0;
+	public static $kurs = 33;
 
 	public function getInput()
 	{
@@ -59,7 +59,7 @@ class JFormFieldCBooking extends CFormField
 
 	public function getkurs()
 	{
-		if(!self::$kurs)
+		/*if(!self::$kurs)
 		{
 			$currencies['USD'] = 'R01235';
 			$currencies['EUR'] = 'R01239';
@@ -86,7 +86,7 @@ class JFormFieldCBooking extends CFormField
 			{
 				self::$kurs = 1;
 			}
-		}
+		}*/
 		$this->kurs = self::$kurs;
 		$this->kurs = str_replace(',', '.', $this->kurs);
 	}
@@ -171,6 +171,16 @@ class JFormFieldCBooking extends CFormField
 		$app = JFactory::getApplication();
 		$cart = $app->getUserState('booking_cart', array());
 		$amount = $app->input->get('amount', array(), 'array');
+		$total_days = $app->input->getInt('total_days', 1);
+		$unf = $app->input->getInt('unf', 0);
+		$cart['unf'] = $unf;
+		$changed_days = false;
+
+		if(!isset($cart['total_days']) || $cart['total_days'] != $total_days)
+		{
+			$cart['total_days'] = $total_days;
+			$changed_days = true;
+		}
 
 		foreach ($amount as $type => $array)
 		{
@@ -184,7 +194,13 @@ class JFormFieldCBooking extends CFormField
 		foreach ($days as $type => $array)
 		{
 			foreach ($array as $id => $am) {
-				$cart['time_'.$type][$id] = $am;
+				if ($changed_days) {
+					$cart['time_'.$type][$id] = $total_days;
+				}
+				else
+				{
+					$cart['time_'.$type][$id] = $am;
+				}
 			}
 		}
 
@@ -274,13 +290,13 @@ class JFormFieldCBooking extends CFormField
 
 		$cart = $app->getUserState('booking_cart', array());
 
-		if(empty($cart) || (empty($cart['rent']) || empty($cart['sale']) || empty($cart['order'])))
+		if(empty($cart) || (empty($cart['rent']) && empty($cart['sale']) && empty($cart['order'])))
 			AjaxHelper::send('');
 
-		$c_rent = array_keys($cart['rent']);
-		$c_sale = array_keys($cart['sale']);
-		$c_order = array_keys($cart['order']);
-		$cart = array_merge($c_rent, $c_sale, $c_order);
+		$c_rent = !empty($cart['rent']) ? array_keys($cart['rent']) : array();
+		$c_sale = !empty($cart['sale']) ? array_keys($cart['sale']) : array();
+		$c_order = !empty($cart['order']) ? array_keys($cart['order']) : array();
+		$cart_ids = array_merge($c_rent, $c_sale, $c_order);
 
 		include_once JPATH_ROOT. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_cobalt'. DIRECTORY_SEPARATOR .'api.php';
 		$api = new CobaltApi();
@@ -296,13 +312,9 @@ class JFormFieldCBooking extends CFormField
 				false,
 				false,
 				0,
-				$cart);
+				$cart_ids);
 
 		$content = $result['html'];
-
-
-		$cart = $app->getUserState('booking_cart', array());
-		$body = '';
 
 		$config = JFactory::getConfig();
 		$mod_params = new JRegistry($app->input->getString('mod_params', ''));
@@ -317,7 +329,7 @@ class JFormFieldCBooking extends CFormField
 		$mailer->setBody($content);
 		$mailer->Send();
 
-		$app->setUserState('booking_cart', array());
+		//$app->setUserState('booking_cart', array());
 		$app->redirect(base64_decode($app->input->post->getString('return')), 'Заказ успешно отправлен');
 
 		return true;

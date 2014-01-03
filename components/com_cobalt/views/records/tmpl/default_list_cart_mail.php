@@ -88,14 +88,18 @@ $this->rmodel = JModelLegacy::getInstance('Fields', 'CobaltModel');
 						<table class="pull-right">
 							<tr>
 								<td>Всего по разделу</td>
-								<td><?php echo $this->total_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+	<td><?php echo $this->book_field->nformat(round($this->total_cat, -1));?>
+								<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 							</tr>
 
-							<?php echo getTax($this->total_cat, $this->book_field, $this);?>
+							<?php if(empty($this->cart['unf'])):?>
+								<?php echo getTax($this->total_cat, $this->book_field, $this);?>
+							<?php endif;?>
 
 							<tr>
 								<td>Итого по разделу</td>
-								<td><?php echo $this->total_cat + $this->tax_cat?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+								<td><?php echo $this->book_field->nformat(round($this->total_cat + $this->tax_cat, -1));?>
+								<?php echo JText::_($this->book_field->params->get('params.cur_output'))?></td>
 							</tr>
 						</table>
 					</td>
@@ -107,19 +111,38 @@ $this->rmodel = JModelLegacy::getInstance('Fields', 'CobaltModel');
 	<?php endforeach;?>
 	<div class="pull-right">
 		<table class="table">
+<tr>
+				<td>Имею УНФ:</td>
+				<?php
+					$checked = !empty($this->cart['unf']) ? 'Да' : 'Нет';
+				?>
+				<td><?php echo $checked;?></td>
+			</tr>
+			<tr>
+				<td>Количество дней:</td>
+				<td><?php echo !empty($this->cart['total_days']) ? $this->cart['total_days'] : 1;?></td>
+			</tr>
+		</table>
+	</div>
+	<div class="clearfix"></div>
+	<div class="pull-right">
+		<table class="table">
 			<tr>
 				<td>Всего</td>
-				<td><?php echo $this->total?> <?php echo $this->book_field->params->get('params.cur_output')?></td>
+				<td><?php echo $this->book_field->nformat(round($this->total, -1));?>
+				<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 			</tr>
 
-			<?php $this->tax_cat = 0;?>
-			<?php echo getTax($this->total, $this->book_field, $this);?>
+			<?php if(empty($this->cart['unf'])):?>
+				<?php $this->tax_cat = 0;?>
+				<?php echo getTax($this->total, $this->book_field, $this);?>
+			<?php endif;?>
 
 			<tr>
 				<td>Итого</td>
-				<td><b><?php echo $this->total + $this->tax_cat ?> <?php echo $this->book_field->params->get('params.cur_output')?></b></td>
+				<td><?php echo $this->book_field->nformat(round($this->total + $this->tax_cat, -1)); ?>
+				<?php echo JText::_($this->book_field->params->get('params.cur_output'));?></td>
 			</tr>
-
 		</table>
 	</div>
 
@@ -148,7 +171,8 @@ function getTax($price, $field, $that)
 			<?php
 				$that->tax_cat += $_tax;
 			?>
-			<?php echo $_tax;?> <?php echo $that->book_field->params->get('params.cur_output');?>
+			<?php echo $that->book_field->nformat(round($_tax, -1));?>
+			<?php echo JText::_($that->book_field->params->get('params.cur_output'));?>
 		</td>
 	</tr>
 	<?php endforeach;?>
@@ -176,23 +200,37 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
 			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CRENT');?></td>
-			<td><?php echo $that->book_field->value['rent']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>
+				<?php
+					if(!isset($that->book_field->value['rent']['fix'])){
+						$price = $that->book_field->getReadyPrice($that->book_field->value['rent'], true);
+					} else {
+						$price = @$that->book_field->value['rent']['price'];
+					}
+					echo $that->book_field->nformat($price);
+				?>
+
+			<?php echo JText::_($that->book_field->params->get('params.cur_output'));?></td>
 			<td>сут.</td>
-			<td><input type="text" class="input-mini" name="amount[rent][<?php echo $item->id ?>]" value="<?php echo $that->cart['rent'][$item->id]?>"/>
+			<td><?php echo $that->cart['rent'][$item->id]?>
 
 				<?php
 					echo isset($that->book_field->units[$that->book_field->value['rent']['unit']]) ? $that->book_field->units[$that->book_field->value['rent']['unit']] : 'No unit';
 				?>
 			</td>
-			<td><?php echo isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1;?> сут.</td>
+			<td><?php
+				$time = isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1;
+				echo $time;
+
+				?> сут.</td>
 			<td>
 				<?php
-					$a = $that->cart['rent'][$item->id] * $that->book_field->value['rent']['price'] * (isset($that->cart['time_rent'][$item->id]) ? $that->cart['time_rent'][$item->id] : 1);
+					$a = $that->cart['rent'][$item->id] * $price * $time;
 					$that->total_cat += $a;
 					$that->total += $a;
-					echo $a;
+					echo $that->book_field->nformat($a);
 				?>
-				<?php echo $that->book_field->params->get('params.cur_output')?>
+				<?php echo JText::_($that->book_field->params->get('params.cur_output'));?>
 			</td>
 		</tr>
 		<?php endif;?>
@@ -204,7 +242,17 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
 			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CSALE');?></td>
-			<td><?php echo $that->book_field->value['sale']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>
+				<?php
+					if(!isset($that->book_field->value['sale']['fix'])){
+						$price = $that->book_field->getReadyPrice($that->book_field->value['sale']);
+					} else {
+						$price = @$that->book_field->value['sale']['price'];
+					}
+					echo $that->book_field->nformat($price);
+				?>
+
+			 <?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>&nbsp;</td>
 			<td><?php echo $that->cart['sale'][$item->id]?>"
 				<?php
@@ -214,12 +262,12 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td>&nbsp;</td>
 			<td>
 				<?php
-					$a = $that->cart['sale'][$item->id] * $that->book_field->value['sale']['price'] * 1;
+					$a = $that->cart['sale'][$item->id] * $price;
 					$that->total_cat += $a;
 					$that->total += $a;
-					echo $a;
+					echo $that->book_field->nformat($a);
 				?>
-				<?php echo $that->book_field->params->get('params.cur_output')?>
+				<?php echo JText::_($that->book_field->params->get('params.cur_output'));?>
 			</td>
 		</tr>
 		<?php endif;?>
@@ -230,7 +278,17 @@ function getItemBlock($item, $that, $core_fields = '')
 			<td rowspan="<?php echo $rowspan;?>"><?php getTitle($item, $that);?></td>
 			<?php $title_show = true; endif;?>
 			<td><?php echo JText::_('CORDER');?></td>
-			<td><?php echo $that->book_field->value['order']['price']?> <?php echo $that->book_field->params->get('params.cur_output')?></td>
+			<td>
+				<?php
+					if(!isset($that->book_field->value['order']['fix'])){
+						$price = $that->book_field->getReadyPrice($that->book_field->value['order']);
+					} else {
+						$price = @$that->book_field->value['order']['price'];
+					}
+					echo $that->book_field->nformat($price);
+				?>
+
+			<?php echo $that->book_field->params->get('params.cur_output')?></td>
 			<td>час.</td>
 			<td><?php echo $that->cart['order'][$item->id]?>
 
@@ -238,15 +296,17 @@ function getItemBlock($item, $that, $core_fields = '')
 					echo isset($that->book_field->units[$that->book_field->value['order']['unit']]) ? $that->book_field->units[$that->book_field->value['order']['unit']] : 'No unit';
 				?>
 			</td>
-			<td><?php echo isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1;?> сут.</td>
+			<td><?php
+				$time = isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1;
+				echo $time;?> сут.</td>
 			<td>
 				<?php
-					$a = $that->cart['order'][$item->id] * $that->book_field->value['order']['price'] * (isset($that->cart['time_order'][$item->id]) ? $that->cart['time_order'][$item->id] : 1);
+					$a = $that->cart['order'][$item->id] * $price * $time;
 					$that->total_cat += $a;
 					$that->total += $a;
-					echo $a;
+					echo $that->book_field->nformat($a);
 				?>
-				<?php echo $that->book_field->params->get('params.cur_output')?>
+				<?php echo JText::_($that->book_field->params->get('params.cur_output'));?>
 			</td>
 		</tr>
 		<?php endif;?>
@@ -279,7 +339,7 @@ function getTitle($item, $that){
 	$uri = JFactory::getURI();
 	$u = $uri->getScheme().'://'.$uri->getHost().'/';
 ?>
-	<a <?php echo $item->nofollow ? 'rel="nofollow"' : '';?> href="<?php echo $u.JRoute::_($item->url);?>">
+	<a href="<?php echo $u.JRoute::_($item->url);?>">
 		<?php echo $item->title?>
 	</a>
 
