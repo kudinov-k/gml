@@ -11,18 +11,21 @@ defined('_JEXEC') or die('Restricted access');
 class CustomTemplateHelper
 {
 
-	public static function getItems($this, $items, $cols)
+	public static function getItems($that, $items, $cols)
 	{
-		$span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);?>
+		$span = array(1 => 12, 2 => 6, 3 => 4, 4 => 3, 6 => 2);
+		$prefix = $that->params->get('tmpl_params.prefix', '');
+		?>
+
 		<?php $k = 0;?>
 		<?php foreach ($items AS $item):?>
 
 			<?php if($k % $cols == 0):?>
-				<div class="row-fluid">
+				<div class="row-fluid <?php echo $prefix;?>center-align-row">
 			<?php endif;?>
 
-			<div class="span<?php echo $span[$cols]?> ">
-				<?php echo self::getItemBlock($item, $this); ?>
+			<div class="span<?php echo $span[$cols]?> <?php echo $prefix;?>center-align">
+				<?php echo self::getItemBlock($item, $that); ?>
 			</div>
 
 			<?php if($k % $cols == ($cols - 1)):?>
@@ -194,7 +197,7 @@ class CustomTemplateHelper
 
 		<?php if($that->params->get('tmpl_core.item_title')):?>
 			<?php if($that->submission_types[$item->type_id]->params->get('properties.item_title')):?>
-				<div class="<?php echo $that->params->get('tmpl_params.title_align', 'pull-left')?>">
+				<div style="width: 100%" class="<?php echo $that->params->get('tmpl_params.title_align', 'pull-left')?>">
 					<<?php echo $that->params->get('tmpl_core.title_tag', 'h2');?> class="record-title">
 						<?php if( $that->params->get('tmpl_params.title_length', 0) && mb_strlen($item->title) > $that->params->get('tmpl_params.title_length')):?>
 							<?php $item->title = mb_substr($item->title, 0, $that->params->get('tmpl_params.title_length')).$that->params->get('tmpl_params.title_end')?>
