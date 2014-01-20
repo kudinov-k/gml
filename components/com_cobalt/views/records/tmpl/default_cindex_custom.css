@@ -1,0 +1,29 @@
+.subcat {
+
+
+}
+
+.cat-center-align{
+	text-align: center;
+}
+
+.sub-category-box{
+	color:#ccc;
+	float:none !important;
+	display: inline-block !important;
+	vertical-align: top;
+	margin : 0 !important;
+}
+
+.ci-cat-title{
+	font-size: 18px;
+}
+.ci-cat-descr{
+	font-size: 12px;
+}
+.ci-subcat-title{
+	font-size: 14px;
+}
+.ci-subcat-descr{
+	font-size: 10px;
+}
